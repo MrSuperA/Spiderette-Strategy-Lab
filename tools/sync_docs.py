@@ -910,7 +910,7 @@ def sync_all(
     print("[sync_docs] 已更新 docs/modules.md")
 
     # 生成 README
-    readme_content = generate_readme(new_meta, strategies, modules)
+    readme_content = generate_readme({**new_meta["stats"], "test_count": new_meta["test_count"]}, strategies, modules)
     if readme_content:
         (PROJECT_ROOT / "README.md").write_text(readme_content, encoding="utf-8")
         print("[sync_docs] 已更新 README.md")
