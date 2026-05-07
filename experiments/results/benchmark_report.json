@@ -1,0 +1,258 @@
+{
+  "timestamp": "2026-05-03 01:28:12",
+  "benchmarks": [
+    {
+      "strategy": "greedy",
+      "difficulty": 1,
+      "wall_time_s": 1.07,
+      "name": "greedy",
+      "total_games": 20,
+      "wins": 0,
+      "deadlocks": 19,
+      "win_rate": 0.0,
+      "win_rate_ci95": [
+        0,
+        0.0
+      ],
+      "avg_moves": 102.3,
+      "avg_time_ms": 53.2,
+      "avg_completed": 2.45,
+      "moves_dist": {
+        "count": 20,
+        "mean": 102.35,
+        "std": 95.21,
+        "median": 75.5,
+        "min": 58,
+        "max": 500,
+        "p25": 68.75,
+        "p75": 94.0,
+        "p90": 110.1,
+        "p99": 429.51
+      },
+      "completed_dist": {
+        "count": 20,
+        "mean": 2.45,
+        "std": 1.19,
+        "median": 2.5,
+        "min": 1,
+        "max": 4,
+        "p25": 1.0,
+        "p75": 3.25,
+        "p90": 4.0,
+        "p99": 4.0
+      },
+      "step_time_dist": {
+        "count": 2047,
+        "mean": 0.21,
+        "std": 0.16,
+        "median": 0.17,
+        "min": 0.12,
+        "max": 4.87,
+        "p25": 0.16,
+        "p75": 0.19,
+        "p90": 0.27,
+        "p99": 0.78
+      },
+      "avg_move_efficiency": 0.0277,
+      "avg_deal_ratio": 0.0,
+      "avg_max_empty_cols": 1.4,
+      "avg_legal_moves": 6.7,
+      "max_win_streak": 0,
+      "max_lose_streak": 20
+    },
+    {
+      "strategy": "random",
+      "difficulty": 1,
+      "wall_time_s": 0.72,
+      "name": "random",
+      "total_games": 20,
+      "wins": 0,
+      "deadlocks": 19,
+      "win_rate": 0.0,
+      "win_rate_ci95": [
+        0,
+        0.0
+      ],
+      "avg_moves": 88.3,
+      "avg_time_ms": 35.3,
+      "avg_completed": 1.4,
+      "moves_dist": {
+        "count": 20,
+        "mean": 88.35,
+        "std": 97.53,
+        "median": 67.5,
+        "min": 52,
+        "max": 500,
+        "p25": 60.25,
+        "p75": 72.0,
+        "p90": 86.1,
+        "p99": 423.24
+      },
+      "completed_dist": {
+        "count": 20,
+        "mean": 1.4,
+        "std": 0.99,
+        "median": 1.0,
+        "min": 0,
+        "max": 4,
+        "p25": 1.0,
+        "p75": 2.0,
+        "p90": 2.1,
+        "p99": 3.81
+      },
+      "step_time_dist": {
+        "count": 1767,
+        "mean": 0.09,
+        "std": 0.06,
+        "median": 0.08,
+        "min": 0.06,
+        "max": 2.0,
+        "p25": 0.08,
+        "p75": 0.09,
+        "p90": 0.11,
+        "p99": 0.28
+      },
+      "avg_move_efficiency": 0.0179,
+      "avg_deal_ratio": 0.0,
+      "avg_max_empty_cols": 0.9,
+      "avg_legal_moves": 5.3,
+      "max_win_streak": 0,
+      "max_lose_streak": 20
+    }
+  ],
+  "comparison": {
+    "strategies": [
+      {
+        "name": "greedy",
+        "total_games": 20,
+        "wins": 0,
+        "deadlocks": 19,
+        "win_rate": 0.0,
+        "win_rate_ci95": [
+          0,
+          0.0
+        ],
+        "avg_moves": 102.3,
+        "avg_time_ms": 53.2,
+        "avg_completed": 2.45,
+        "moves_dist": {
+          "count": 20,
+          "mean": 102.35,
+          "std": 95.21,
+          "median": 75.5,
+          "min": 58,
+          "max": 500,
+          "p25": 68.75,
+          "p75": 94.0,
+          "p90": 110.1,
+          "p99": 429.51
+        },
+        "completed_dist": {
+          "count": 20,
+          "mean": 2.45,
+          "std": 1.19,
+          "median": 2.5,
+          "min": 1,
+          "max": 4,
+          "p25": 1.0,
+          "p75": 3.25,
+          "p90": 4.0,
+          "p99": 4.0
+        },
+        "step_time_dist": {
+          "count": 2047,
+          "mean": 0.21,
+          "std": 0.16,
+          "median": 0.17,
+          "min": 0.12,
+          "max": 4.87,
+          "p25": 0.16,
+          "p75": 0.19,
+          "p90": 0.27,
+          "p99": 0.78
+        },
+        "avg_move_efficiency": 0.0277,
+        "avg_deal_ratio": 0.0,
+        "avg_max_empty_cols": 1.4,
+        "avg_legal_moves": 6.7,
+        "max_win_streak": 0,
+        "max_lose_streak": 20
+      },
+      {
+        "name": "random",
+        "total_games": 20,
+        "wins": 0,
+        "deadlocks": 19,
+        "win_rate": 0.0,
+        "win_rate_ci95": [
+          0,
+          0.0
+        ],
+        "avg_moves": 88.3,
+        "avg_time_ms": 35.3,
+        "avg_completed": 1.4,
+        "moves_dist": {
+          "count": 20,
+          "mean": 88.35,
+          "std": 97.53,
+          "median": 67.5,
+          "min": 52,
+          "max": 500,
+          "p25": 60.25,
+          "p75": 72.0,
+          "p90": 86.1,
+          "p99": 423.24
+        },
+        "completed_dist": {
+          "count": 20,
+          "mean": 1.4,
+          "std": 0.99,
+          "median": 1.0,
+          "min": 0,
+          "max": 4,
+          "p25": 1.0,
+          "p75": 2.0,
+          "p90": 2.1,
+          "p99": 3.81
+        },
+        "step_time_dist": {
+          "count": 1767,
+          "mean": 0.09,
+          "std": 0.06,
+          "median": 0.08,
+          "min": 0.06,
+          "max": 2.0,
+          "p25": 0.08,
+          "p75": 0.09,
+          "p90": 0.11,
+          "p99": 0.28
+        },
+        "avg_move_efficiency": 0.0179,
+        "avg_deal_ratio": 0.0,
+        "avg_max_empty_cols": 0.9,
+        "avg_legal_moves": 5.3,
+        "max_win_streak": 0,
+        "max_lose_streak": 20
+      }
+    ],
+    "rankings": {
+      "best_win_rate": {
+        "name": "greedy",
+        "rate": 0.0
+      },
+      "best_efficiency": {
+        "name": "greedy",
+        "efficiency": 0.0277
+      },
+      "best_avg_moves": {
+        "name": "greedy",
+        "moves": 102.3
+      },
+      "fastest": {
+        "name": "greedy",
+        "time_ms": 53.2
+      }
+    },
+    "total_games": 40
+  }
+}
