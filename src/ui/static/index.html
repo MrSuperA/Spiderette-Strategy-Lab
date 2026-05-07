@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spiderette Strategy Lab</title>  <!-- title updated by JS -->
+<style>
+:root{
+  --bg:#06080d;--bg2:#0b0f1a;--bg3:#101624;--bg4:#161e30;
+  --border:rgba(100,180,255,.06);--border2:rgba(100,180,255,.12);
+  --text:#dfe6f0;--text2:#7e8da0;--text3:#3d4a5e;
+  --accent:#4facfe;--accent2:#a78bfa;--green:#36d399;--yellow:#fbbf24;--red:#f87171;
+  --r:8px;--card-w:54px;
+  --glass:rgba(16,22,36,.65);--glass-border:rgba(100,180,255,.08);
+  --glow-accent:0 0 20px rgba(79,172,254,.15);
+  --glow-green:0 0 20px rgba(54,211,153,.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:12px/1.5 "SF Pro Display","Segoe UI",system-ui,-apple-system,sans-serif;letter-spacing:.01em}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(79,172,254,.15);border-radius:10px;transition:background .3s}
+::-webkit-scrollbar-thumb:hover{background:rgba(79,172,254,.3)}
+
+/* ===== LAYOUT ===== */
+body{display:flex;flex-direction:column}
+.header{display:flex;align-items:center;padding:0 16px;height:40px;background:rgba(11,15,26,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--glass-border);flex-shrink:0;gap:12px}
+.toolbar{display:flex;align-items:center;padding:3px 12px;height:36px;background:rgba(11,15,26,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--glass-border);flex-shrink:0;gap:6px}
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:240px;flex-shrink:0;background:rgba(11,15,26,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-right:1px solid var(--glass-border);overflow-y:auto;padding:8px}
+.center{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.right{width:340px;flex-shrink:0;background:rgba(11,15,26,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-left:1px solid var(--glass-border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar::before,.right::before{content:"";position:absolute;top:0;left:0;right:0;height:120px;background:radial-gradient(ellipse at top,rgba(79,172,254,.03),transparent);pointer-events:none;z-index:0}
+.sidebar,.right{position:relative}
+.sidebar>*,.right>*{position:relative;z-index:1}
+
+/* ===== HEADER ===== */
+.logo{font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.3px;white-space:nowrap}
+.tags{display:flex;gap:8px;margin-left:auto}
+.tag{font-size:10px;padding:2px 10px;border-radius:12px;border:1px solid;white-space:nowrap;transition:all .3s ease;font-weight:500}
+.t-idle{color:var(--text3);border-color:rgba(61,74,94,.4)}
+.t-run{color:var(--yellow);border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.06);animation:pulse-glow 2s ease-in-out infinite}
+.t-win{color:var(--green);border-color:rgba(54,211,153,.3);background:rgba(54,211,153,.08);box-shadow:var(--glow-green)}
+.t-dead{color:var(--red);border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.05)}
+.t-play{color:var(--accent);border-color:rgba(79,172,254,.25);background:rgba(79,172,254,.05)}
+
+/* ===== TOOLBAR ===== */
+.tb-sep{width:1px;height:18px;background:var(--border2);margin:0 2px}
+.tb-lbl{font-size:10px;color:var(--text3);white-space:nowrap}
+select.tb{background:var(--bg4);color:var(--text);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;outline:none;transition:all .2s ease}
+select.tb:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,172,254,.1)}
+.tb-spacer{flex:1}
+.sw{position:relative;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:10px;color:var(--text2);white-space:nowrap;user-select:none}
+.sw input{display:none}
+.sw-track{width:30px;height:16px;background:var(--bg4);border:1px solid var(--border2);border-radius:8px;position:relative;transition:all .3s cubic-bezier(.4,0,.2,1)}
+.sw-track::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;background:var(--text3);border-radius:50%;transition:all .3s cubic-bezier(.4,0,.2,1)}
+.sw input:checked+.sw-track{background:rgba(79,172,254,.2);border-color:var(--accent)}
+.sw input:checked+.sw-track::after{transform:translateX(14px);background:var(--accent)}
+
+/* ===== BUTTONS ===== */
+.btn{padding:4px 12px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bg4);color:var(--text);font-size:11px;cursor:pointer;transition:all .2s ease;white-space:nowrap}
+.btn:hover{border-color:var(--accent);background:rgba(79,172,254,.08);color:var(--accent)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn-sm{padding:2px 8px;font-size:10px}
+.btn-icon{width:26px;height:26px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;font-size:13px}
+.btn-icon:hover{background:rgba(79,172,254,.1)}
+.btn-start{background:linear-gradient(135deg,rgba(54,211,153,.15),rgba(79,172,254,.15));border-color:var(--green);color:var(--green)}
+.btn-start:hover{background:linear-gradient(135deg,rgba(54,211,153,.25),rgba(79,172,254,.25));box-shadow:var(--glow-green)}
+.btn-primary{background:linear-gradient(135deg,rgba(79,172,254,.15),rgba(167,139,250,.15));border-color:var(--accent);color:var(--accent)}
+.btn-primary:hover{background:linear-gradient(135deg,rgba(79,172,254,.25),rgba(167,139,250,.25));box-shadow:var(--glow-accent)}
+.btn-go{background:linear-gradient(135deg,rgba(79,172,254,.15),rgba(167,139,250,.15));border-color:var(--accent);color:var(--accent)}
+.btn-go:hover{background:linear-gradient(135deg,rgba(79,172,254,.25),rgba(167,139,250,.25));box-shadow:var(--glow-accent)}
+.btn-stop{border-color:rgba(248,113,113,.3);color:var(--red)}
+.btn-stop:hover{background:rgba(248,113,113,.08);border-color:var(--red)}
+.btn-warn{border-color:rgba(251,191,36,.3);color:var(--yellow)}
+.btn-warn:hover{background:rgba(251,191,36,.08);border-color:var(--yellow)}
+.btn-danger{border-color:rgba(248,113,113,.3);color:var(--red)}
+.btn-danger:hover{background:rgba(248,113,113,.08);border-color:var(--red)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--text2)}
+.btn-ghost:hover{background:rgba(79,172,254,.06);border-color:var(--border2);color:var(--text)}
+
+/* ===== PANELS ===== */
+.panel{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text2)}
+.panel-hd h3{font-size:11px;font-weight:600;color:var(--text2);margin:0}
+.panel-body{padding:8px 10px}
+.pbar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;margin-top:4px}
+.pfill{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.4,0,.2,1),background .3s}
+
+/* ===== METRICS GRID ===== */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}
+.mitem{display:flex;justify-content:space-between;align-items:center;padding:2px 0;font-size:11px}
+.ml{color:var(--text2);font-size:11px}
+.mv{color:var(--text);font-weight:500;font-variant-numeric:tabular-nums;font-size:11px}
+
+/* ===== FACTOR ROWS ===== */
+.frow{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px}
+.fname{width:80px;color:var(--text2);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.fbar{flex:1;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;min-width:0}
+.fbar .pfill{height:100%;border-radius:2px}
+.fval{width:40px;text-align:right;color:var(--text2);flex-shrink:0;font-variant-numeric:tabular-nums;font-size:10px}
+
+/* ===== BOARD ===== */
+.board-grid{display:flex;gap:4px;padding:0;justify-content:center;flex-wrap:nowrap;flex:1;min-width:0}
+.col{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;border:1px solid var(--border);border-radius:6px;background:rgba(16,22,36,.3);min-width:0;flex:1;max-width:64px;transition:border-color .2s ease}
+.col:hover{border-color:var(--border2)}
+.col-hd{font-size:9px;color:var(--text3);font-weight:600;padding:2px 0;letter-spacing:.5px}
+.col-body{display:flex;flex-direction:column;align-items:center;gap:1px;min-height:40px}
+.col-empty{font-size:9px;color:var(--text3);padding:8px 0}
+.bstats{display:flex;gap:8px;justify-content:center;padding:4px 0;font-size:10px;color:var(--text2)}
+.bs{display:flex;gap:4px;align-items:center}
+.g{color:var(--green)}
+.a{color:var(--accent)}
+.y{color:var(--yellow)}
+
+/* ===== CARDS ===== */
+.card{width:var(--card-w);height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:1px solid var(--border2);background:var(--bg3);transition:all .2s ease;cursor:default;flex-shrink:0}
+.card-fd{background:linear-gradient(135deg,#1a2744,#1e3a5f 40%,#1a2744 60%,#1e3a5f);border:1px solid rgba(79,172,254,.2);opacity:1;position:relative;overflow:hidden}.card-fd::after{content:"";position:absolute;inset:2px;border:1px dashed rgba(79,172,254,.15);border-radius:2px}
+.card-fu{cursor:pointer;transition:all .2s ease}
+.card-fu:hover{border-color:var(--accent);box-shadow:0 0 8px rgba(79,172,254,.15);transform:translateY(-1px)}
+.card-fu.red{color:var(--red)}
+.card-fu.black{color:var(--text)}
+.card-top{border-color:var(--accent);box-shadow:0 0 6px rgba(79,172,254,.12)}
+
+/* ===== SNAPSHOT NAV ===== */
+.snap-hd{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border)}
+.snap-hd h3{font-size:11px;font-weight:600;color:var(--text2);margin:0}
+.snap-nav{display:flex;align-items:center;gap:4px}
+.snap-btn{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:var(--bg4);border:1px solid var(--border2);color:var(--text2);cursor:pointer;font-size:10px;transition:all .2s ease}
+.snap-btn:hover{border-color:var(--accent);color:var(--accent)}
+.snap-ctr{font-size:10px;color:var(--text3);min-width:40px;text-align:center;font-variant-numeric:tabular-nums}
+
+/* ===== STATS GRID ===== */
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}
+.st-item{display:flex;justify-content:space-between;align-items:center;padding:2px 0;font-size:11px}
+.sl{color:var(--text2);font-size:11px}
+.sv{color:var(--text);font-weight:500;font-variant-numeric:tabular-nums;font-size:11px}
+
+/* ===== RECORD TABLE ===== */
+.rgtbl{width:100%;border-collapse:collapse;font-size:10px}
+.rgtbl th{text-align:left;color:var(--text3);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--border);font-size:10px}
+.rgtbl td{padding:3px 6px;color:var(--text2);border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;font-size:10px}
+.rg-empty{text-align:center;color:var(--text3);font-size:11px;padding:16px 0}
+.rg-win{color:var(--green);font-weight:600}
+.rg-dead{color:var(--red);font-weight:600}
+
+/* ===== RIGHT TABS ===== */
+.rtabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.rtab{flex:1;padding:6px 8px;text-align:center;font-size:11px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s ease}
+.rtab:hover{color:var(--text2)}
+.rtab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.rcontent{flex:1;overflow-y:auto;padding:8px}
+.rcontent>div{display:none}
+.rcontent>div.active{display:block}
+
+/* ===== LOG TABLE ===== */
+.log-tbl{width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed}
+.log-tbl th,.log-tbl td{padding:3px 6px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+.log-tbl th:first-child,.log-tbl td:first-child{width:64px;color:var(--text3)}
+.log-tbl th:nth-child(2),.log-tbl td:nth-child(2){width:40px}
+.log-tbl th:last-child,.log-tbl td:last-child{white-space:normal;word-break:break-all}
+.lv-info{color:var(--text2)}
+.lv-warn{color:var(--yellow);font-weight:600}
+.lv-error{color:var(--red);font-weight:600}
+.lv-debug{color:var(--text3)}
+.log-badge{display:inline-block;min-width:14px;height:14px;line-height:14px;text-align:center;border-radius:7px;font-size:9px;font-weight:700;padding:0 4px;margin-left:4px}
+.log-badge-err{background:rgba(245,101,101,.2);color:var(--red)}
+.log-badge-warn{background:rgba(255,190,50,.2);color:var(--yellow)}
+
+/* ===== ANALYSIS GRID ===== */
+.sa-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}
+.sa-item{display:flex;justify-content:space-between;align-items:center;padding:2px 0;font-size:11px}
+
+/* ===== MODAL ===== */
+.modal{position:fixed;inset:0;background:rgba(6,8,13,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:10000;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.modal.show{opacity:1;pointer-events:auto}
+.modal-box{background:var(--bg2);border:1px solid var(--glass-border);border-radius:12px;padding:20px 24px;min-width:320px;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform:translateY(10px);transition:transform .25s ease}
+.modal.show .modal-box{transform:translateY(0)}
+.modal-box h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
+.modal-box p{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;top:48px;left:50%;transform:translateX(-50%) translateY(-10px);padding:8px 20px;border-radius:8px;font-size:12px;opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);z-index:9999;pointer-events:none;backdrop-filter:blur(12px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:rgba(54,211,153,.12);border:1px solid rgba(54,211,153,.25);color:var(--green);box-shadow:0 4px 20px rgba(54,211,153,.1)}
+.toast.err{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:var(--red);box-shadow:0 4px 20px rgba(248,113,113,.1)}
+.toast.info{background:rgba(79,172,254,.12);border:1px solid rgba(79,172,254,.25);color:var(--accent);box-shadow:0 4px 20px rgba(79,172,254,.1)}
+
+/* ===== SYNC INDICATOR ===== */
+.dash-sync{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text3)}
+.dash-sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-glow 2s ease-in-out infinite}
+.dash-sync-dot.lag{background:var(--yellow)}
+
+/* ===== ANIMATIONS ===== */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes pulse-glow{0%,100%{opacity:1;box-shadow:none}50%{opacity:.7;box-shadow:0 0 8px rgba(251,191,36,.15)}}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@keyframes fade-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+</style>
+<body>
+
+<!-- ═══ 1. HEADER ═══ -->
+<div class="header">
+  <div class="logo">♠ <span id="projectName">Spiderette Strategy Lab</span> <span style="font-size:10px;font-weight:400;color:var(--text3)" id="verTag">v-</span></div>
+  <div class="tags">
+    <span class="tag t-idle" id="tagRun">待命</span>
+    <span class="tag t-idle" id="tagGame">未开始</span>
+    <span class="tag t-idle" id="tagStep">步数 0</span>
+  </div>
+</div>
+
+<!-- ═══ 2. TOOLBAR ═══ -->
+<div class="toolbar">
+  <span class="tb-lbl">花色</span>
+  <select class="tb" id="selDiff"><option value="1">1花色</option><option value="2" selected>2花色</option><option value="4">4花色</option></select>
+  <span class="tb-lbl">策略</span>
+  <select class="tb" id="selStrat" onchange="onStrategyChange()"></select>
+  <button class="btn btn-sm" onclick="showImportStrategy()" title="导入自定义策略">+导入</button>
+  <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(event)">
+  <div class="tb-sep"></div>
+  <button class="btn" id="btnStep" onclick="doSingleStep()" disabled title="执行一步">单步</button>
+  <div class="tb-sep"></div>
+  <label class="sw"><input type="checkbox" id="togDeal" checked><span class="sw-track"></span>自动发牌</label>
+  <label class="sw"><input type="checkbox" id="togNew"><span class="sw-track"></span>自动新局</label>
+  <label class="sw"><input type="checkbox" id="togParallel"><span class="sw-track"></span>多核加速</label>
+  <div class="tb-sep"></div>
+  <button class="btn" onclick="runBatch(10)">模拟10局</button>
+  <button class="btn" onclick="runBatch(50)">模拟50局</button>
+  <div class="tb-spacer"></div>
+  <button class="btn btn-start" id="btnNew" onclick="newGame()">新牌局</button>
+  <button class="btn btn-primary" id="btnStart" onclick="doStart()">启动</button>
+  <button class="btn btn-warn" id="btnPause" onclick="doPause()">暂停</button>
+  <button class="btn btn-stop" id="btnStop" onclick="doStop()">停止</button>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- ═══ LEFT SIDEBAR ═══ -->
+  <div class="sidebar">
+
+    <!-- 1. 性能监控（最上面） -->
+    <div class="panel">
+      <div class="panel-hd"><h3>性能监控</h3><span style="font-size:10px;color:var(--text3)" id="perfCores">-</span></div>
+      <div class="panel-body">
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text3)">CPU 使用率</span><span id="perfCpu" style="font-variant-numeric:tabular-nums">0%</span></div>
+          <div class="pbar"><div class="pfill" id="perfCpuBar" style="width:0%;background:var(--accent)"></div></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text3)">内存占用</span><span id="perfMem" style="font-variant-numeric:tabular-nums">0GB / 0GB</span></div>
+          <div class="pbar"><div class="pfill" id="perfMemBar" style="width:0%;background:var(--green)"></div></div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--text3)">GPU 负载</span><span id="perfGpu" style="font-variant-numeric:tabular-nums">-</span></div>
+          <div class="pbar"><div class="pfill" id="perfGpuBar" style="width:0%;background:var(--yellow)"></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px">
+          <span style="color:var(--text3)" id="perfGpuName">-</span>
+          <span style="font-variant-numeric:tabular-nums" id="perfGpuTemp">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 策略监控 -->
+    <div class="panel">
+      <div class="panel-hd"><h3>策略监控</h3><span style="font-size:10px;color:var(--accent)" id="siName">-</span></div>
+      <div class="panel-body">
+        <div class="mgrid">
+          <div class="mitem"><span class="ml">迭代次数</span><span class="mv" id="siIter">0</span></div>
+          <div class="mitem"><span class="ml">模拟次数</span><span class="mv" id="siSim">0</span></div>
+          <div class="mitem"><span class="ml">最优评分</span><span class="mv" id="siScore">-</span></div>
+          <div class="mitem"><span class="ml">深度</span><span class="mv" id="siDepth">0</span></div>
+          <div class="mitem"><span class="ml">耗时</span><span class="mv" id="siTime">0ms</span></div>
+          <div class="mitem"><span class="ml">探索率</span><span class="mv" id="siExplore">-</span></div>
+        </div>
+        <div style="margin-top:6px;padding:4px 6px;background:var(--bg4);border-radius:3px;border-left:2px solid var(--accent);font-size:10px">
+          <span style="color:var(--text3)">推荐动作：</span>
+          <span id="siMove" style="color:var(--text)">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 策略量化（无计算方程） -->
+    <div class="panel">
+      <div class="panel-hd"><h3>策略量化</h3><span style="font-size:10px;color:var(--accent)" id="profName">-</span></div>
+      <div class="panel-body">
+        <div id="factorList">
+          <div class="frow"><span class="fname">花色保持</span><div class="pbar"><div class="pfill fbar" id="f0" style="width:0%"></div></div><span class="fval" id="fv0">0.000</span></div>
+          <div class="frow"><span class="fname">翻牌意愿</span><div class="pbar"><div class="pfill fbar" id="f1" style="width:0%"></div></div><span class="fval" id="fv1">0.000</span></div>
+          <div class="frow"><span class="fname">序列构建</span><div class="pbar"><div class="pfill fbar" id="f2" style="width:0%"></div></div><span class="fval" id="fv2">0.000</span></div>
+          <div class="frow"><span class="fname">空列利用</span><div class="pbar"><div class="pfill fbar" id="f3" style="width:0%"></div></div><span class="fval" id="fv3">0.000</span></div>
+          <div class="frow"><span class="fname">发牌时机</span><div class="pbar"><div class="pfill fbar" id="f4" style="width:0%"></div></div><span class="fval" id="fv4">0.000</span></div>
+          <div class="frow"><span class="fname">可逆偏好</span><div class="pbar"><div class="pfill fbar" id="f5" style="width:0%"></div></div><span class="fval" id="fv5">0.000</span></div>
+          <div class="frow"><span class="fname">风险容忍</span><div class="pbar"><div class="pfill fbar" id="f6" style="width:0%"></div></div><span class="fval" id="fv6">0.000</span></div>
+          <div class="frow"><span class="fname">决策一致</span><div class="pbar"><div class="pfill fbar" id="f7" style="width:0%"></div></div><span class="fval" id="fv7">0.000</span></div>
+        </div>
+        <div style="margin-top:4px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:10px;color:var(--text3)" id="profStatus">运行中自动更新</span>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-sm" onclick="doProfile('json')">导出JSON</button>
+            <button class="btn btn-sm" onclick="doProfile('txt')">导出TXT</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 牌局导出（最下面） -->
+    <div class="panel">
+      <div class="panel-hd"><h3>牌局导出</h3><span style="font-size:10px;color:var(--text3)" id="expCount">0 局</span></div>
+      <div class="panel-body">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">
+          <button class="btn btn-sm" onclick="doExport('json')">JSON</button>
+          <button class="btn btn-sm" onclick="doExport('csv')">CSV</button>
+          <button class="btn btn-sm" onclick="doExport('txt')">TXT</button>
+          <button class="btn btn-sm" onclick="loadHistory()">历史</button>
+        </div>
+        <div id="expStatus" style="font-size:10px;color:var(--text3);margin-bottom:4px">导出当前已记录的牌局数据</div>
+        <div id="historyList" style="max-height:80px;overflow-y:auto;font-size:10px;display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CENTER ═══ -->
+  <div class="center">
+
+    <!-- 牌局详情（占大头） -->
+    <div class="panel" style="margin:6px 8px 0;flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden">
+      <div class="panel-hd"><h3>牌局详情</h3><span class="dash-sync" id="syncIndicator" style="display:none"><span class="dash-sync-dot" id="syncDot"></span><span id="syncText">同步中</span></span></div>
+      <div class="panel-body" style="flex:1;display:flex;flex-direction:column;overflow:hidden;padding:4px 6px">
+        <!-- 牌桌区：发牌堆(左上) + 牌列(右) 同行 -->
+        <div style="display:flex;gap:4px;align-items:flex-start;flex:1;min-height:0;overflow:hidden">
+          <!-- 发牌堆（靠左上角） -->
+          <div id="stockBox" style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;border:1px solid var(--border);border-radius:6px;background:rgba(16,22,36,.3)">
+            <div style="display:flex;gap:2px">
+              <div style="width:18px;height:26px;background:linear-gradient(135deg,#1e3a5f,#152d4a);border:1px solid rgba(30,58,95,.7);border-radius:2px"></div>
+              <div style="width:18px;height:26px;background:linear-gradient(135deg,#1e3a5f,#152d4a);border:1px solid rgba(30,58,95,.7);border-radius:2px;margin-left:-10px"></div>
+              <div style="width:18px;height:26px;background:linear-gradient(135deg,#1e3a5f,#152d4a);border:1px solid rgba(30,58,95,.7);border-radius:2px;margin-left:-10px"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text2)">剩余 <span style="font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums" id="stockCount">0</span></div>
+          </div>
+          <!-- 10列牌桌 -->
+          <div class="board-grid" id="boardGrid" style="flex:1;overflow:auto"></div>
+        </div>
+        <!-- 统计条（最下面靠左） -->
+        <div class="bstats" id="boardStats" style="justify-content:flex-start;flex-shrink:0;margin-top:4px"></div>
+      </div>
+    </div>
+
+    <!-- 底部：快照(左) + 统计(右)，低高度 -->
+    <div style="display:flex;gap:8px;padding:0 8px 8px;flex:0 0 auto;max-height:200px;min-height:140px">
+
+      <!-- 牌局快照（左） -->
+      <div class="panel" style="flex:1;margin-bottom:0;display:flex;flex-direction:column;min-width:0;overflow:hidden">
+        <div class="snap-hd">
+          <h3>牌局快照</h3>
+          <div class="snap-nav">
+            <div class="snap-btn" onclick="snapNav('first')" title="第一步">|◀</div>
+            <div class="snap-btn" onclick="snapNav('prev')" title="上一步">◀</div>
+            <span class="snap-ctr" id="snapCtr">0/0</span>
+            <div class="snap-btn" onclick="snapNav('next')" title="下一步">▶</div>
+            <div class="snap-btn" onclick="snapNav('last')" title="最后一步">▶|</div>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto"><pre id="snapText" style="font-size:10px;font-family:'Cascadia Code','Consolas',monospace;padding:4px 6px;color:var(--text2);white-space:pre;line-height:1.3;margin:0">开始游戏后显示牌局快照</pre></div>
+      </div>
+
+      <!-- 牌局统计（右） -->
+      <div class="panel" style="flex:1;margin-bottom:0;display:flex;flex-direction:column;min-width:0;overflow:hidden">
+        <div class="panel-hd">
+          <h3>牌局统计</h3>
+          <button class="btn btn-ghost btn-sm" onclick="resetStats()">清空</button>
+        </div>
+        <div class="panel-body" style="flex:1;overflow-y:auto">
+          <div class="st-grid" style="grid-template-columns:repeat(2,1fr)">
+            <div class="st-item"><span class="sl">总局数</span><span class="sv a" id="stTotal">0</span></div>
+            <div class="st-item"><span class="sl">胜率</span><span class="sv g" id="stRate">0%</span></div>
+            <div class="st-item"><span class="sl">胜/负</span><span class="sv" id="stWD">0/0</span></div>
+            <div class="st-item"><span class="sl">连胜/连败</span><span class="sv" id="stStreak"><span class="sv y" id="stWStreak">0</span> / <span class="sv r" id="stLStreak">0</span></span></div>
+            <div class="st-item"><span class="sl">均步数</span><span class="sv" id="stAvgM">-</span></div>
+          </div>
+          <div style="margin-top:3px"><div class="pbar"><div class="pfill" id="stBar" style="width:0%;background:var(--green)"></div></div></div>
+          <div style="margin-top:4px">
+            <div class="rg-empty" id="rgEmpty" style="padding:8px;font-size:10px">暂无数据</div>
+            <table class="rgtbl" id="rgTable" style="display:none">
+              <thead><tr><th>#</th><th>结果</th><th>策略</th><th>步数</th><th>完成</th></tr></thead>
+              <tbody id="rgTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 10-11. RIGHT PANEL: 运行日志 + 策略分析 ═══ -->
+  <div class="right">
+    <div class="rtabs">
+      <div class="rtab active" onclick="switchTab('log',this)">运行日志</div>
+      <div class="rtab" onclick="switchTab('analysis',this)">策略分析</div>
+    </div>
+    <div class="rcontent">
+
+      <!-- 10. 运行日志 -->
+      <div id="tab-log" class="active">
+        <div style="display:flex;gap:4px;margin-bottom:6px;align-items:center">
+          <select class="tb" id="logLevel" style="font-size:10px" onchange="filterLog()">
+            <option value="all">全部</option>
+            <option value="debug">调试+</option>
+            <option value="info">信息+</option>
+            <option value="warn">警告+</option>
+            <option value="error">仅错误</option>
+          </select>
+          <input type="text" id="logFilter" placeholder="筛选..." style="flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:3px;padding:2px 6px;font-size:10px;color:var(--text);outline:none" oninput="filterLog()">
+          <span id="logCounts" style="font-size:9px;color:var(--text3);white-space:nowrap"></span>
+          <button class="btn btn-ghost btn-sm" onclick="clearLog()">清空</button>
+        </div>
+        <div id="logScrollBox" style="flex:1;overflow-y:auto">
+          <table class="log-tbl"><thead><tr><th>时间</th><th>级别</th><th>描述</th></tr></thead><tbody id="logTbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- 11. 策略分析 -->
+      <div id="tab-analysis">
+        <!-- 搜索统计 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>搜索统计</h3><span style="font-size:10px;color:var(--accent)" id="asName">-</span></div>
+          <div class="panel-body">
+            <div class="mgrid">
+              <div class="mitem"><span class="ml">迭代次数</span><span class="mv" id="asIter">0</span></div>
+              <div class="mitem"><span class="ml">模拟次数</span><span class="mv" id="asSim">0</span></div>
+              <div class="mitem"><span class="ml">最优评分</span><span class="mv" id="asScore">-</span></div>
+              <div class="mitem"><span class="ml">搜索深度</span><span class="mv" id="asDepth">0</span></div>
+              <div class="mitem"><span class="ml">耗时</span><span class="mv" id="asTime">0ms</span></div>
+              <div class="mitem"><span class="ml">探索权重</span><span class="mv" id="asExplore">-</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- 推荐动作 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>推荐动作</h3></div>
+          <div class="panel-body">
+            <div style="font-size:11px;color:var(--text2);padding:4px 6px;background:var(--bg4);border-radius:3px;border-left:2px solid var(--accent)" id="asMove">暂无推荐动作</div>
+          </div>
+        </div>
+        <!-- 效率指标 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>效率指标</h3></div>
+          <div class="panel-body">
+            <div class="sa-grid">
+              <div class="sa-item"><span class="sl">步均耗时</span><span class="sv" id="asAvgT">0ms</span></div>
+              <div class="sa-item"><span class="sl">合法移动数</span><span class="sv" id="asLegal">0</span></div>
+              <div class="sa-item"><span class="sl">总步数</span><span class="sv" id="asMoves">0</span></div>
+              <div class="sa-item"><span class="sl">发牌次数</span><span class="sv" id="asDeals">0</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- 步数分布 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>步数分布</h3></div>
+          <div class="panel-body">
+            <div class="sa-grid">
+              <div class="sa-item"><span class="sl">均值</span><span class="sv" id="asDMean">-</span></div>
+              <div class="sa-item"><span class="sl">标准差</span><span class="sv" id="asDStd">-</span></div>
+              <div class="sa-item"><span class="sl">中位数</span><span class="sv" id="asDMed">-</span></div>
+              <div class="sa-item"><span class="sl">P90</span><span class="sv" id="asDP90">-</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- 搜索树 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>搜索树</h3><button class="btn btn-ghost btn-sm" onclick="loadSearchTree()">刷新</button></div>
+          <div class="panel-body">
+            <div id="treeView" style="font-size:10px;font-family:monospace;color:var(--text2);max-height:150px;overflow-y:auto;white-space:pre;line-height:1.4">暂无数据</div>
+          </div>
+        </div>
+        <!-- 弱点检测 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>弱点检测</h3><button class="btn btn-ghost btn-sm" onclick="detectWeakness()">检测</button></div>
+          <div class="panel-body">
+            <div id="weaknessView" style="font-size:10px;color:var(--text2)">点击检测当前策略弱点</div>
+          </div>
+        </div>
+        <!-- 策略对比 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>策略对比</h3></div>
+          <div class="panel-body">
+            <div style="display:flex;gap:4px;margin-bottom:4px">
+              <button class="btn btn-sm" onclick="runCompare()">对比当前策略 vs 贪心</button>
+              <button class="btn btn-sm" onclick="runTournament()">锦标赛(全部)</button>
+            </div>
+            <div id="compareView" style="font-size:10px;color:var(--text2)">点击按钮运行对比</div>
+          </div>
+        </div>
+        <!-- 遗传算法优化 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>参数优化</h3><button class="btn btn-ghost btn-sm" onclick="runGenetic()">运行</button></div>
+          <div class="panel-body">
+            <div id="geneticView" style="font-size:10px;color:var(--text2)">遗传算法自动搜索最优参数</div>
+          </div>
+        </div>
+        <!-- 模式挖掘 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>模式挖掘</h3><button class="btn btn-ghost btn-sm" onclick="minePatterns()">挖掘</button></div>
+          <div class="panel-body">
+            <div id="patternView" style="font-size:10px;color:var(--text2)">从历史数据中发现致胜模式和死局前兆</div>
+          </div>
+        </div>
+        <!-- 神经网络训练 -->
+        <div class="panel">
+          <div class="panel-hd"><h3>神经网络</h3><button class="btn btn-ghost btn-sm" onclick="trainNeural()">训练</button></div>
+          <div class="panel-body">
+            <div id="neuralView" style="font-size:10px;color:var(--text2)">MLP 模型训练（需先运行牌局收集数据）</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ 状态机 ═══
+let state='idle'; // idle|ready|running|paused|stopped|ended
+let hasGame=false,lastResult=null,recentGames=[];
+let sessStats={total:0,wins:0,deads:0,steps:[],comps:[],wStreak:0,lStreak:0,maxW:0,maxL:0,last:null};
+let stepTimes=[],legalCounts=[],dealCount=0,totalMoves=0;
+let snapHistory=[],snapIdx=-1,snapAuto=true;
+const SNAP_MAX=200; // 环形缓冲区上限
+let logEntries=[];
+let prevState=null;
+let smoothCpu=0,smoothMem=0,smoothGpu=0;
+
+function $i(id){return document.getElementById(id)}
+
+// ═══ 网络层（超时/重试/去重/自适应） ═══
+const NET={timeout:5000,retries:3,retryDelay:500,inflight:new Map()};
+
+async function api(p,opts={}){
+  // 请求去重：同一路径正在请求中则复用
+  const key=p+(opts.method||'GET');
+  if(NET.inflight.has(key))return NET.inflight.get(key);
+
+  const promise=_fetchWithRetry(p,opts);
+  NET.inflight.set(key,promise);
+  promise.finally(()=>NET.inflight.delete(key));
+  return promise;
+}
+
+async function _fetchWithRetry(p,opts,retry=0){
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),NET.timeout);
+  try{
+    const r=await fetch('/api/'+p,{headers:{'Content-Type':'application/json'},signal:ctrl.signal,...opts});
+    clearTimeout(timer);
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  }catch(e){
+    clearTimeout(timer);
+    if(retry<NET.retries&&e.name!=='AbortError'){
+      await new Promise(r=>setTimeout(r,NET.retryDelay*(retry+1)));
+      return _fetchWithRetry(p,opts,retry+1);
+    }
+    if(e.name==='AbortError')throw new Error('请求超时');
+    throw e;
+  }
+}
+
+// Toast 限频
+let _lastToast=0;
+function toast(m,t='info'){
+  if(t==='err'){const now=Date.now();if(now-_lastToast<3000)return;_lastToast=now}
+  const e=$i('toast');e.textContent=m;e.className='toast '+t+' show';setTimeout(()=>e.classList.remove('show'),2500)
+}
+
+// ── 策略切换联动 ──
+async function onStrategyChange(){
+  const strat=$i('selStrat').value;
+  try{await api('switch-strategy',{method:'POST',body:JSON.stringify({strategy:strat})});addLog('info','策略切换: '+strat)}catch(e){addLog('error','策略切换失败: '+e.message)}
+  $i('siName').textContent=$i('selStrat').options[$i('selStrat').selectedIndex].text;
+}
+
+// ── 单步执行 ──
+async function doSingleStep(){
+  if(!hasGame)return;
+  const strat=$i('selStrat').value;
+  try{
+    const d=await api('step',{method:'POST',body:JSON.stringify({strategy:strat})});
+    if(d.ok&&d.state){updateUI(d.state);if(d.steps)d.steps.forEach(s=>{logStep(s);appendSnap(s)});if(d.result)lastResult=d.result;if(lastResult&&lastResult.outcome!=='playing')onGameEnd(d.state)}
+  }catch(e){addLog('error','单步执行失败: '+e.message);toast('单步失败','err')}
+}
+
+// ── 搜索树 ──
+async function loadSearchTree(){
+  const strat=$i('selStrat').value;
+  try{
+    const d=await api('search-tree?strategy='+strat);
+    if(d.ok&&d.tree){$i('treeView').textContent=renderTree(d.tree,0)}
+    else{$i('treeView').textContent=d.error||'暂无数据（需先运行MCTS）'}
+  }catch(e){addLog('error','搜索树加载失败: '+e.message);$i('treeView').textContent='加载失败'}
+}
+function renderTree(n,dep){
+  if(!n)return'';const indent='  '.repeat(dep);
+  const mv=n.move?(n.move.action==='deal'?'发牌':'列'+((n.move.src||0)+1)+'→列'+((n.move.dst||0)+1)):'root';
+  let t=indent+`[${mv}] 访问:${n.visits} 评分:${n.score}\n`;
+  if(n.children)n.children.forEach(c=>{t+=renderTree(c,dep+1)});
+  return t;
+}
+
+// ── 弱点检测 ──
+async function detectWeakness(){
+  const strat=$i('selStrat').value;
+  const fkeys=['suit_preservation','exposure_willingness','sequence_building','empty_column_usage','deal_timing','reversibility_preference','risk_tolerance','decision_consistency'];
+  const factors={};fkeys.forEach((k,i)=>{const el=$i('fv'+i);factors[k]=parseFloat(el?.textContent)||0});
+  try{
+    const d=await api('weakness',{method:'POST',body:JSON.stringify({strategy:strat,factors})});
+    if(d.ok){
+      let h='';
+      if(d.weaknesses?.length){d.weaknesses.forEach(w=>{const c=w.severity==='high'?'var(--red)':'var(--yellow)';h+=`<div style="margin-bottom:3px;padding:3px 4px;background:var(--bg4);border-radius:3px;border-left:2px solid ${c}"><div style="font-weight:600;color:${c}">${w.display_name} (${w.score.toFixed(2)})</div><div style="color:var(--text3);font-size:9px">${w.suggestion}</div></div>`})}
+      else h='<div style="color:var(--green)">未发现明显弱点</div>';
+      if(d.strengths?.length)h+=`<div style="margin-top:3px;color:var(--green);font-size:10px">优势: ${d.strengths.join(', ')}</div>`;
+      $i('weaknessView').innerHTML=h;
+    }else $i('weaknessView').textContent=d.error||'检测失败';
+  }catch(e){addLog('error','弱点检测失败: '+e.message);$i('weaknessView').textContent='检测失败'}
+}
+
+// ── 策略对比 ──
+async function runCompare(){
+  const strat=$i('selStrat').value;
+  if(strat==='greedy'){toast('请选择非贪心策略','info');return}
+  $i('compareView').textContent='对比中...';
+  try{
+    const d=await api('compare',{method:'POST',body:JSON.stringify({strategies:[strat,'greedy'],difficulty:+$i('selDiff').value,num_games:10})});
+    if(d.ok&&d.rankings){const r=d.rankings;$i('compareView').innerHTML=`<div class="sa-grid"><div class="sa-item"><span class="sl">最佳胜率</span><span class="sv g">${r.best_win_rate?.name||'-'}</span></div><div class="sa-item"><span class="sl">最佳效率</span><span class="sv a">${r.best_efficiency?.name||'-'}</span></div><div class="sa-item"><span class="sl">最少步数</span><span class="sv">${r.best_avg_moves?.name||'-'}</span></div><div class="sa-item"><span class="sl">最快速度</span><span class="sv">${r.fastest?.name||'-'}</span></div></div>`}
+    else $i('compareView').textContent=d.error||'对比失败';
+  }catch(e){addLog('error','策略对比失败: '+e.message);$i('compareView').textContent='对比失败'}
+}
+
+// ── 锦标赛 ──
+async function runTournament(){
+  $i('compareView').textContent='锦标赛运行中...';
+  try{
+    const d=await api('tournament',{method:'POST',body:JSON.stringify({strategies:['greedy','mcts','mcts_fast'],difficulty:+$i('selDiff').value,num_games:10})});
+    if(d.ok&&d.standings){let h='<table class="rgtbl"><thead><tr><th>策略</th><th>胜率</th><th>得分</th></tr></thead><tbody>';for(const[n,s]of Object.entries(d.standings))h+=`<tr><td>${n}</td><td>${(s.win_rate*100).toFixed(0)}%</td><td>${s.score.toFixed(2)}</td></tr>`;h+='</tbody></table>';$i('compareView').innerHTML=h}
+    else $i('compareView').textContent=d.error||'失败';
+  }catch(e){$i('compareView').textContent='失败'}
+}
+
+// ── 遗传算法 ──
+async function runGenetic(){
+  const strat=$i('selStrat').value;
+  $i('geneticView').textContent='进化中...';
+  try{
+    const d=await api('genetic-optimize',{method:'POST',body:JSON.stringify({strategy:strat,difficulty:+$i('selDiff').value,generations:10,pop_size:8})});
+    if(d.ok&&d.best){let h='<div style="color:var(--green);font-weight:600;margin-bottom:3px">最优参数:</div>';for(const[k,v]of Object.entries(d.best.params||{}))h+=`<div style="color:var(--text2)">${k}: <span style="color:var(--accent)">${v}</span></div>`;h+=`<div style="margin-top:3px;color:var(--text3)">适应度:${d.best.fitness?.toFixed(2)} 胜率:${(d.best.win_rate*100).toFixed(0)}%</div>`;$i('geneticView').innerHTML=h}
+    else $i('geneticView').textContent=d.error||'失败';
+  }catch(e){$i('geneticView').textContent='失败'}
+}
+
+// ── 模式挖掘 ──
+async function minePatterns(){
+  $i('patternView').textContent='挖掘中...';
+  try{
+    const d=await api('mine-patterns',{method:'POST'});
+    if(d.ok){let h='';if(d.patterns)d.patterns.slice(0,5).forEach(p=>{h+=`<div style="margin-bottom:2px"><span style="color:var(--accent)">${p.description}</span> <span style="color:var(--text3)">(${(p.confidence*100).toFixed(0)}%)</span></div>`});if(d.recommendations?.length){h+='<div style="margin-top:3px;color:var(--yellow)">建议:</div>';d.recommendations.forEach(r=>{h+=`<div style="color:var(--text2);font-size:10px">• ${r}</div>`})}$i('patternView').innerHTML=h||'未发现模式';
+    }else $i('patternView').textContent=d.error||'需先运行牌局';
+  }catch(e){$i('patternView').textContent='失败'}
+}
+
+// ── 神经网络 ──
+async function trainNeural(){
+  $i('neuralView').textContent='训练中...';
+  try{
+    const d=await api('neural-train',{method:'POST',body:JSON.stringify({strategy:'greedy',difficulty:+$i('selDiff').value,num_games:50})});
+    if(d.ok)$i('neuralView').innerHTML=`<div style="color:var(--green)">训练完成</div><div style="color:var(--text2)">样本:${d.samples} 损失:${d.final_loss}</div>`;
+    else $i('neuralView').textContent=d.error||'失败';
+  }catch(e){$i('neuralView').textContent='失败'}
+}
+
+// ── 历史牌局 ──
+async function loadHistory(){
+  try{
+    const d=await api('export/history');
+    if(d.ok&&d.games?.length){let h='';d.games.slice(-10).reverse().forEach((g,i)=>{h+=`<div style="padding:2px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="viewReplay(${d.games.length-1-i})">seed=${g.seed} | ${g.outcome} | ${g.total_moves}步 | ${g.completed}/8</div>`});$i('historyList').innerHTML=h;$i('historyList').style.display='block'}
+    else{$i('historyList').innerHTML='<div style="color:var(--text3)">暂无历史</div>';$i('historyList').style.display='block'}
+  }catch(e){toast('加载失败','err')}
+}
+async function viewReplay(idx){
+  try{
+    const d=await api('replay?index='+idx);
+    if(d.ok&&d.game){let t=`回放 seed=${d.game.seed} ${d.game.outcome} ${d.game.total_moves}步\n\n`;t+=`完成: ${d.game.completed}/8  耗时: ${(d.game.total_time_ms/1000).toFixed(1)}s\n\n`;t+='── 最近步骤 ──\n';(d.game.steps||[]).slice(-15).forEach(s=>{const m=s.move;t+=`#${s.step} ${m?.action==='deal'?'发牌':m?.action==='move'?'列'+((m.src||0)+1)+'→列'+((m.dst||0)+1):m?.action||'-'}\n`});$i('snapText').textContent=t;$i('snapCtr').textContent='回放模式'}
+  }catch(e){}
+}
+
+function updateButtons(){
+  const bn=$i('btnNew'),bs=$i('btnStart'),bp=$i('btnPause'),bx=$i('btnStop'),bt=$i('btnStep');
+  bn.disabled=false;bs.disabled=false;bp.disabled=false;bx.disabled=false;bt.disabled=false;
+  switch(state){
+    case 'idle':    bs.disabled=true;bp.disabled=true;bx.disabled=true;bt.disabled=true;bs.textContent='启动';break;
+    case 'ready':   bn.disabled=true;bp.disabled=true;bx.disabled=true;bs.textContent='启动';break;
+    case 'running': bn.disabled=true;bs.disabled=true;bt.disabled=true;bs.textContent='启动';break;
+    case 'paused':  bn.disabled=true;bp.disabled=true;bs.textContent='恢复';break;
+    case 'stopped': bp.disabled=true;bx.disabled=true;bs.textContent='启动';break;
+    case 'ended':   bs.disabled=true;bp.disabled=true;bx.disabled=true;bt.disabled=true;bs.textContent='启动';break;
+  }
+  // 暂停按钮：running 时黄色可用，其他状态灰色禁用
+  if(state==='running'){bp.className='btn btn-warn';bp.style.opacity='1'}
+  else if(bp.disabled){bp.className='btn btn-warn';bp.style.opacity='.3'}
+  else{bp.className='btn btn-warn';bp.style.opacity='1'}
+  $i('selDiff').disabled=(state==='running'||state==='paused');
+}
+
+// ── Actions ──
+async function newGame(){
+  if(state==='running'||state==='paused')return;
+  const d=await api('new-game',{method:'POST',body:JSON.stringify({seed:Math.floor(Math.random()*1e5),difficulty:+$i('selDiff').value,strategy:$i('selStrat').value})});
+  if(d.ok){
+    hasGame=true;lastResult=null;stepTimes=[];legalCounts=[];dealCount=0;totalMoves=0;snapHistory=[];snapIdx=-1;snapAuto=true;prevState=null;_prevCols=null;_pendingState=null;_stepBuffer=[];_factorDirty=true;_lastFactorCalc=0;
+    // 保留旧局日志
+    if(_gameLogs.length>0)_allGameLogs.push({logs:[..._gameLogs],ts:Date.now()});
+    _gameLogs=[];
+    state='ready';updateUI(d.state);updateButtons();
+    // 初始快照
+    appendSnap({step:0,state:d.state});
+    addLog('info','新牌局已创建 seed='+d.state.seed);toast('新牌局已创建','ok');
+    // 立即计算因子
+    calcFactorsImmediate();
+  }
+}
+async function doStart(){
+  if(state==='running'||state==='idle')return;
+  if(state==='ended'||state==='stopped'){await newGame();if(state!=='ready')return;}
+  state='running';updateButtons();
+  const strat=$i('selStrat').value;
+  addLog('info','已启动 策略='+strat+' 难度='+$i('selDiff').value+'花色');toast('已启动','ok');
+  api('auto-play',{method:'POST',body:JSON.stringify({strategy:strat,max_moves:500})});
+}
+async function doPause(){
+  if(state!=='running')return;
+  state='paused';updateButtons();
+  await api('stop',{method:'POST'});
+  // SSE auto_paused 会带完整 state 并切回牌局视图
+  addLog('warn','已暂停');toast('已暂停','info');
+}
+async function doStop(){
+  if(state!=='running'&&state!=='paused')return;
+  // 立即更新前端状态（不等后端响应）
+  state='stopped';running=false;updateButtons();
+  _pendingState=null;_stepBuffer=[];_pendingStrategyStats=null;
+  addLog('warn','已停止');toast('已停止','info');
+  // 通知后端（不等待响应，避免卡住）
+  api('stop',{method:'POST'}).catch(()=>{});
+}
+async function runBatch(n){
+  if(state==='running'||state==='paused')return;
+  state='running';updateButtons();addLog('info','模拟'+n+'局中...');
+  try{const d=await api('run',{method:'POST',body:JSON.stringify({strategy:$i('selStrat').value,difficulty:+$i('selDiff').value,count:n})});
+    if(d.ok&&d.results){d.results.forEach(r=>addRecent(r));updateSess();addLog('info','完成'+d.total+'局 胜率'+d.win_rate);toast('完成'+d.total+'局 胜率'+d.win_rate,'ok')}
+    else{addLog('error',d.error||'模拟失败');toast(d.error||'模拟失败','err')}
+  }catch(e){addLog('error','模拟失败');toast('模拟失败','err')}
+  state=hasGame?'stopped':'idle';updateButtons();
+}
+
+// ── Stats ──
+function addRecent(r){
+  recentGames.unshift({result:r.result,strategy:r.strategy||$i('selStrat').value,steps:r.total_steps||0,completed:r.completed||0});
+  if(recentGames.length>50)recentGames.length=50;
+  sessStats.total++;if(r.result==='WIN'){sessStats.wins++;sessStats.wStreak++;sessStats.lStreak=0;if(sessStats.wStreak>sessStats.maxW)sessStats.maxW=sessStats.wStreak}
+  else{sessStats.deads++;sessStats.lStreak++;sessStats.wStreak=0;if(sessStats.lStreak>sessStats.maxL)sessStats.maxL=sessStats.lStreak}
+  sessStats.last=r.result;if(r.total_steps)sessStats.steps.push(r.total_steps);if(r.completed!==undefined)sessStats.comps.push(r.completed);
+}
+function updateSess(){
+  const s=sessStats;
+  $i('stTotal').textContent=s.total;$i('stRate').textContent=s.total?Math.round(s.wins/s.total*100)+'%':'0%';
+  $i('stWD').textContent=s.wins+'/'+s.deads;$i('stWStreak').textContent=s.maxW;$i('stLStreak').textContent=s.maxL;
+  $i('stAvgM').textContent=s.steps.length?Math.round(s.steps.reduce((a,b)=>a+b,0)/s.steps.length):'-';
+  $i('stBar').style.width=(s.total?s.wins/s.total*100:0)+'%';
+  const tb=$i('rgTbody'),em=$i('rgEmpty'),t=$i('rgTable');
+  if(!recentGames.length){em.style.display='';t.style.display='none';return}
+  em.style.display='none';t.style.display='';
+  tb.innerHTML=recentGames.slice(0,20).map((g,i)=>`<tr><td>${i+1}</td><td><span class="${g.result==='WIN'?'rg-win':'rg-dead'}">${g.result==='WIN'?'胜':'负'}</span></td><td>${g.strategy||'-'}</td><td>${g.steps}</td><td>${g.completed}/8</td></tr>`).join('');
+}
+function resetStats(){sessStats={total:0,wins:0,deads:0,steps:[],comps:[],wStreak:0,lStreak:0,maxW:0,maxL:0,last:null};updateSess();toast('已清空','info')}
+
+// ── UI Update ──
+function updateUI(s){
+  if(!s)return;
+  const tr=$i('tagRun'),ts=$i('tagStep');
+  if(state==='running'){tr.className='tag t-run';tr.textContent='运行中'}
+  else if(state==='paused'){tr.className='tag t-idle';tr.textContent='已暂停'}
+  else if(state==='ended'&&lastResult&&lastResult.outcome==='win'){tr.className='tag t-win';tr.textContent='胜利'}
+  else if(state==='ended'&&lastResult&&lastResult.outcome==='deadlock'){tr.className='tag t-dead';tr.textContent='死局'}
+  else if(state==='ready'||state==='stopped'){tr.className='tag t-play';tr.textContent='就绪'}
+  else{tr.className='tag t-idle';tr.textContent='待命'}
+  ts.textContent='步数 '+(s.move_count||0);
+  const comp=s.completed||0,sr=s.stock_remaining||0,cols=s.columns||[];
+  const ec=cols.filter(c=>(c.face_down||0)===0&&(!c.face_up||!c.face_up.length)).length;
+  const fu=cols.reduce((a,c)=>a+(c.face_up?c.face_up.length:0),0),fd=cols.reduce((a,c)=>a+(c.face_down||0),0);
+  renderBoard(s);
+  $i('stockCount').textContent=sr;
+  const avgMs=stepTimes.length?(stepTimes.reduce((a,b)=>a+b,0)/stepTimes.length):0;
+  const stepRate=avgMs>0?(1000/avgMs).toFixed(1):'0';
+  $i('boardStats').innerHTML=`<span class="bs">完成<span style="color:var(--green)">${comp}</span></span><span class="bs">发牌<span style="color:var(--accent)">${sr}</span></span><span class="bs">空列<span style="color:var(--yellow)">${ec}</span></span><span class="bs">明牌<span>${fu}</span></span><span class="bs">暗牌<span>${fd}</span></span><span class="bs">步数<span>${s.move_count||0}</span></span><span class="bs">步速<span style="color:var(--accent)">${stepRate}/s</span></span><span class="bs">均耗<span style="color:var(--accent)">${avgMs.toFixed(0)}ms</span></span>`;
+  // Sidebar: 策略监控（名称与下拉框同步）
+  const sel=$i('selStrat');$i('siName').textContent=sel.options[sel.selectedIndex].text;
+  const avgT=stepTimes.length?(stepTimes.reduce((a,b)=>a+b,0)/stepTimes.length):0;
+  const avgL=legalCounts.length?(legalCounts.reduce((a,b)=>a+b,0)/legalCounts.length):0;
+  $i('siTime').textContent=avgT.toFixed(1)+'ms';
+  // Right: 策略分析
+  $i('asName').textContent=sel.options[sel.selectedIndex].text;$i('asAvgT').textContent=avgT.toFixed(1)+'ms';$i('asLegal').textContent=avgL.toFixed(1);$i('asMoves').textContent=totalMoves;$i('asDeals').textContent=dealCount;
+}
+// ── 牌桌渲染（增量更新） ──
+let _prevCols=null; // 上一次的列数据快照
+
+function renderBoard(s){
+  const cols=s.columns||[];
+  const grid=$i('boardGrid');
+
+  // 首次渲染：创建全部 DOM
+  if(!grid.children.length||!_prevCols||_prevCols.length!==cols.length){
+    let h='';
+    for(let i=0;i<cols.length;i++){
+      h+=`<div class="col" id="col${i}"><div class="col-hd">${i+1}</div><div class="col-body" id="colb${i}"></div></div>`;
+    }
+    grid.innerHTML=h;
+    _prevCols=null;
+  }
+
+  // 增量更新：只更新变化的列
+  for(let i=0;i<cols.length;i++){
+    const c=cols[i];
+    const prev=_prevCols?_prevCols[i]:null;
+    const fd=c.face_down||0;
+    const fu=c.face_up||[];
+
+    // 检查是否变化
+    const pfd=prev?(prev.face_down||0):-1;
+    const pfu=prev?(prev.face_up||[]):null;
+    const fuKey=fu.map(k=>k.rank+k.suit).join(',');
+    const pfuKey=pfu?pfu.map(k=>k.rank+k.suit).join(','):'';
+
+    if(fd===pfd&&fuKey===pfuKey)continue; // 未变化，跳过
+
+    // 重建这一列的 DOM
+    const body=$i('colb'+i);
+    if(!body)continue;
+    let h='';
+    if(!fd&&!fu.length){
+      h='<div class="col-empty">空</div>';
+    }else{
+      for(let j=0;j<fd;j++)h+='<div class="card card-fd"></div>';
+      for(let j=0;j<fu.length;j++){
+        const k=fu[j];
+        h+=`<div class="card card-fu ${k.red?'red':'black'} ${j===fu.length-1?'card-top':''}">${k.rank}${k.suit}</div>`;
+      }
+    }
+    body.innerHTML=h;
+  }
+
+  _prevCols=cols;
+}
+
+// ── 每步日志（完整记录，不依赖 diff） ──
+let _gameLogs = [];  // 当前局日志
+let _allGameLogs = []; // 所有局日志保留
+
+function logStep(step){
+  if(!step||!step.move)return;
+  const m=step.move;
+  let desc='';
+  if(m.action==='deal')desc='发牌';
+  else if(m.action==='complete')desc='完成序列';
+  else if(m.action==='move')desc=`列${(m.src||0)+1}→列${(m.dst||0)+1} (${m.count||1}张)`;
+  else desc=m.action||'移牌';
+
+  const elapsed=step.elapsed_ms?step.elapsed_ms.toFixed(1)+'ms':'-';
+  const legal=step.legal_moves||0;
+  const msg=`#${step.step} ${desc}  耗时${elapsed}  合法${legal}`;
+
+  addLog('info', msg);
+  _gameLogs.push({step:step.step, desc, elapsed:step.elapsed_ms, legal, ts:Date.now()});
+}
+
+// ── 快照（含移动描述） ──
+function appendSnap(step){
+  if(!step||!step.state)return;
+  const cols=step.state.columns||[];
+  const m=step.move;
+  let desc='开始';
+  if(m){
+    if(m.action==='deal')desc='发牌';
+    else if(m.action==='complete')desc='完成序列';
+    else if(m.action==='move')desc=`列${(m.src||0)+1}→列${(m.dst||0)+1}`;
+    else desc=m.action||'移牌';
+  }
+
+  let txt=`步数 #${step.step}  ${desc}\n`;
+  for(let i=0;i<cols.length;i++){
+    const c=cols[i],fd=c.face_down||0,fu=c.face_up||[];
+    let ln=`列${String(i+1).padStart(2)}: `.padEnd(7);
+    for(let j=0;j<fd;j++)ln+='?? ';
+    fu.forEach(k=>ln+=k.rank+k.suit+' ');
+    txt+=ln+'\n';
+  }
+  txt+=`── 完成:${step.state.completed||0}  发牌:${step.state.stock_remaining||0}  步数:${step.state.move_count||0} ──`;
+
+  snapHistory.push(txt);
+  if(snapHistory.length>SNAP_MAX)snapHistory.shift();
+  snapIdx=snapHistory.length-1;
+  if(snapAuto){$i('snapText').textContent=txt;$i('snapCtr').textContent=snapHistory.length+'/'+snapHistory.length}
+}
+function snapNav(dir){
+  if(!snapHistory.length)return;snapAuto=false;
+  if(dir==='first')snapIdx=0;else if(dir==='prev')snapIdx=Math.max(0,snapIdx-1);
+  else if(dir==='next')snapIdx=Math.min(snapHistory.length-1,snapIdx+1);else if(dir==='last'){snapIdx=snapHistory.length-1;snapAuto=true}
+  $i('snapText').textContent=snapHistory[snapIdx];$i('snapCtr').textContent=(snapIdx+1)+'/'+snapHistory.length;
+}
+
+// ── 导出 ──
+async function doExport(fmt){
+  $i('expStatus').textContent='导出中...';
+  try{
+    const d=await api('export',{method:'POST',body:JSON.stringify({format:fmt})});
+    if(d.ok){$i('expStatus').textContent='已导出: '+d.path;toast('导出成功','ok')}
+    else{$i('expStatus').textContent='导出失败: '+(d.error||'');toast('导出失败','err')}
+  }catch(e){$i('expStatus').textContent='导出失败';toast('导出失败','err')}
+}
+
+// ── 策略量化导出 ──
+async function doProfile(fmt){
+  $i('profStatus').textContent='量化分析中，请稍候...';
+  const strat=$i('selStrat').value;
+  const diff=+$i('selDiff').value;
+  try{
+    const d=await api('export/profile',{method:'POST',body:JSON.stringify({format:fmt,strategies:[strat],difficulty:diff,num_games:20})});
+    if(d.ok){$i('profStatus').textContent='已导出: '+d.path;toast('策略量化导出成功','ok')}
+    else{$i('profStatus').textContent='导出失败: '+(d.error||'');toast('导出失败','err')}
+  }catch(e){$i('profStatus').textContent='导出失败';toast('导出失败','err')}
+}
+
+// ── 即时计算因子 ──
+async function calcFactorsImmediate(){
+  const strat=$i('selStrat').value;
+  const diff=+$i('selDiff').value;
+  const sel=$i('selStrat');
+  $i('profName').textContent=sel.options[sel.selectedIndex].text;
+  $i('profStatus').textContent='计算中...';
+  try{
+    const d=await api('calc-factors',{method:'POST',body:JSON.stringify({strategy:strat,difficulty:diff,num_games:5})});
+    if(d.ok&&d.factors){
+      d.factors.forEach((f,i)=>{
+        $i('f'+i).style.width=(f.score*100)+'%';
+        $i('f'+i).style.background=f.score>0.7?'var(--green)':f.score>0.4?'var(--accent)':'var(--yellow)';
+        $i('fv'+i).textContent=f.score.toFixed(3);
+      });
+      $i('profStatus').textContent='计算完成';
+    }else{$i('profStatus').textContent='计算失败'}
+  }catch(e){$i('profStatus').textContent='计算失败'}
+}
+
+// ── Log ──
+const LOG_LEVELS={debug:0,info:1,warn:2,error:3};
+const LOG_LABELS={debug:'调试',info:'信息',warn:'警告',error:'错误'};
+const LOG_CLASSES={debug:'lv-debug',info:'lv-info',warn:'lv-warn',error:'lv-error'};
+let logAutoScroll=true;
+
+function addLog(level,msg,source){
+  const ts=new Date().toTimeString().slice(0,8);
+  const entry={ts,level,msg,source:source||'front',hidden:false};
+  logEntries.push(entry);
+  if(logEntries.length>1000)logEntries.shift();
+  _renderLogEntry(entry);
+  _updateLogCounts();
+}
+
+function _renderLogEntry(entry){
+  const sel=$i('logLevel');
+  const filt=$i('logFilter').value.toLowerCase();
+  const minLv=sel?sel.value:'all';
+  const lvOrder=LOG_LEVELS[entry.level]||0;
+  const minOrder=minLv==='all'?0:minLv==='debug'?0:minLv==='info'?1:minLv==='warn'?2:3;
+  if(minLv==='error'&&entry.level!=='error')entry.hidden=true;
+  else if(lvOrder<minOrder)entry.hidden=true;
+  else if(filt&&!entry.msg.toLowerCase().includes(filt))entry.hidden=true;
+  else entry.hidden=false;
+  if(entry.hidden)return;
+  const tb=$i('logTbody');
+  if(!tb)return;
+  const tr=document.createElement('tr');
+  const cls=LOG_CLASSES[entry.level]||'lv-info';
+  const lbl=LOG_LABELS[entry.level]||entry.level;
+  const src=entry.source==='back'?' <span style="color:var(--text3);font-size:8px">[后端]</span>':'';
+  tr.innerHTML=`<td>${entry.ts}</td><td class="${cls}">${lbl}</td><td>${entry.msg}${src}</td>`;
+  tr.dataset.level=entry.level;
+  tb.appendChild(tr);
+  if(logAutoScroll){const box=$i('logScrollBox');if(box)box.scrollTop=box.scrollHeight;}
+}
+
+function filterLog(){
+  const tb=$i('logTbody');if(!tb)return;
+  tb.innerHTML='';
+  logEntries.forEach(e=>_renderLogEntry(e));
+  _updateLogCounts();
+}
+
+function _updateLogCounts(){
+  const el=$i('logCounts');if(!el)return;
+  let e=0,w=0;
+  logEntries.forEach(x=>{if(x.level==='error')e++;else if(x.level==='warn')w++;});
+  let s='';
+  if(e)s+=`<span class="log-badge log-badge-err">${e}</span>`;
+  if(w)s+=`<span class="log-badge log-badge-warn">${w}</span>`;
+  el.innerHTML=s;
+}
+
+function clearLog(){$i('logTbody').innerHTML='';logEntries=[];_updateLogCounts();}
+
+// Auto-scroll detection
+(function(){
+  const box=document.getElementById('logScrollBox');
+  if(box)box.addEventListener('scroll',function(){
+    logAutoScroll=this.scrollTop+this.clientHeight>=this.scrollHeight-20;
+  });
+})();
+
+// ── Tab ──
+function switchTab(n,el){document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.rcontent>div').forEach(d=>d.classList.remove('active'));el.classList.add('active');$i('tab-'+n).classList.add('active')}
+
+// ── Game end ──
+function onGameEnd(s){
+  state='ended';updateButtons();
+  const out=lastResult?lastResult.outcome:'deadlock';
+  addRecent({result:out==='win'?'WIN':'DEAD',strategy:$i('selStrat').value,total_steps:s.move_count||0,completed:s.completed||0});updateSess();
+  addLog(out==='win'?'info':'warn',out==='win'?'🎉 胜利！完成 '+s.completed+'/8':'💀 死局 完成 '+s.completed+'/8');
+  if($i('togNew').checked)setTimeout(()=>{newGame().then(()=>doStart())},1000);
+}
+
+updateButtons();
+// 动态加载版本号和策略列表
+api('project-meta').then(d=>{
+  if(d.display_name)$i('projectName').textContent=d.display_name;
+  if(d.version){$i('verTag').textContent='v'+d.version;document.title=d.display_name||'Spiderette Strategy Lab';}
+}).catch(()=>{api('version').then(d=>{if(d.version)$i('verTag').textContent='v'+d.version}).catch(()=>{})});
+loadStrategies();
+
+// 初始化空牌桌（10列）
+(function initEmptyBoard(){
+  const grid=$i('boardGrid');let h='';
+  for(let i=0;i<10;i++)h+=`<div class="col" id="col${i}"><div class="col-hd">${i+1}</div><div class="col-body" id="colb${i}"><div class="col-empty">空</div></div></div>`;
+  grid.innerHTML=h;
+  $i('boardStats').innerHTML='<span class="bs">完成<span class="g">0</span></span><span class="bs">发牌<span class="a">0</span></span><span class="bs">空列<span class="y">0</span></span><span class="bs">明牌<span>0</span></span><span class="bs">暗牌<span>0</span></span><span class="bs">步数<span>0</span></span>';
+  $i('stockCount').textContent='0';
+})();
+
+// ═══ 策略列表动态加载 ═══
+let _customStrategies = new Set(); // 跟踪用户导入的自定义策略
+
+async function loadStrategies(){
+  try{
+    const d = await api('strategies');
+    if(d.strategies){
+      const sel = $i('selStrat');
+      const prev = sel.value;
+      sel.innerHTML = '';
+      d.strategies.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.name;
+        opt.textContent = s.display_name;
+        opt.title = s.description || '';
+        if(_customStrategies.has(s.name)) opt.style.color = 'var(--accent2)';
+        sel.appendChild(opt);
+      });
+      // 恢复之前选中的策略
+      if(prev && sel.querySelector('option[value="'+prev+'"]')){
+        sel.value = prev;
+      }
+      // 更新策略监控面板名称
+      $i('siName').textContent = sel.options[sel.selectedIndex]?.text || '-';
+    }
+  }catch(e){}
+}
+
+function showImportStrategy(){
+  $i('importFileInput').click();
+}
+
+async function handleImportFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  event.target.value = ''; // 重置，允许重复选同一文件
+  try{
+    const text = await file.text();
+    const manifest = JSON.parse(text);
+    // 基本校验
+    if(!manifest.name || !manifest.display_name){
+      toast('manifest 缺少 name 或 display_name 字段','err');
+      return;
+    }
+    toast('正在导入策略: ' + manifest.display_name + '...','info');
+    const d = await api('import-strategy', {
+      method: 'POST',
+      body: JSON.stringify({manifest})
+    });
+    if(d.ok){
+      _customStrategies.add(d.strategy);
+      toast('策略导入成功: ' + d.display_name, 'ok');
+      // 刷新下拉框并选中新导入的策略
+      await loadStrategies();
+      $i('selStrat').value = d.strategy;
+      onStrategyChange();
+    } else {
+      toast('导入失败: ' + (d.error||''), 'err');
+    }
+  }catch(e){
+    toast('文件解析失败: ' + e.message, 'err');
+  }
+}
+
+// ═══ SSE 实时推送（紧凑模式 + 仪表盘 + 节流渲染） ═══
+let _sseOk=false,_sseRetry=0;
+let _pendingState=null;
+let _renderThrottle=0;
+const RENDER_MS=16;
+let _stepBuffer=[];
+let _pendingStrategyStats=null;
+let _factorDirty=false,_lastFactorCalc=0;
+const FACTOR_MS=5000;
+let _sseSeq=0,_sseLastSeq=0,_sseDropCount=0;
+
+
+function connectSSE(){
+  const es=new EventSource('/api/stream');
+  es.onopen=function(){_sseOk=true;_sseRetry=0};
+  es.onmessage=function(e){
+    try{
+      const d=JSON.parse(e.data);
+      if(d.type==='log'){
+        addLog(d.level||'info',d.msg||'',d.source||'back');
+        return;
+      }
+      if(d.type==='auto_step'&&d.state){
+        if(state==='stopped')return;
+        _pendingState=d.state;_stepBuffer.push(d.step);
+        if(d.strategy_stats)_pendingStrategyStats=d.strategy_stats;
+        totalMoves++;stepTimes.push(d.step?.elapsed_ms||0);legalCounts.push(d.step?.legal_moves||0);
+        _factorDirty=true;
+        // SSE sequence tracking
+        if(d._sse_seq){
+          if(_sseLastSeq>0&&d._sse_seq!==_sseLastSeq+1)_sseDropCount+=d._sse_seq-_sseLastSeq-1;
+          _sseLastSeq=d._sse_seq;_sseSeq=d._sse_seq;
+          const syncEl=$i('syncIndicator');if(syncEl)syncEl.style.display='';
+          const dot=$i('syncDot');const txt=$i('syncText');
+          if(dot){dot.className='dash-sync-dot'+(_sseDropCount>0?' lag':'');}
+          if(txt)txt.textContent='SEQ:'+_sseSeq+' 丢包:'+_sseDropCount;
+        }
+        // Update strategy stats panel
+        if(d.strategy_stats){
+          const ss=d.strategy_stats;
+          const box=$i('stratStatsBox');if(box)box.style.display='';
+          const sel=$i('selStrat');
+          const sn=$i('dkStratName');if(sn)sn.textContent=sel.options[sel.selectedIndex].text;
+          const si=$i('dkStatIter');if(si)si.textContent=ss.iterations||'\u2014';
+          const st=$i('dkStatTree');if(st)st.textContent=ss.tree_size||'\u2014';
+          const sm=$i('dkStatMem');if(sm)sm.textContent=ss.memory_hit_rate!==undefined?(ss.memory_hit_rate*100).toFixed(1)+'%':'\u2014';
+          const sl=$i('dkStatLegal');if(sl)sl.textContent=d.step?.legal_moves||'\u2014';
+          const sq=$i('dkStatSeq');if(sq)sq.textContent=_sseSeq;
+          const sd=$i('dkStatDrop');if(sd){sd.textContent=_sseDropCount;sd.style.color=_sseDropCount>0?'var(--red)':'var(--green)';}
+        }
+      }else if(d.type==='auto_done'){
+        if(state==='stopped')return;
+        if(d.result)lastResult=d.result;
+        if(d.state){_pendingState=d.state;}
+        flushRender();
+        state='ended';updateButtons();
+        const ssb=$i('stratStatsBox');if(ssb)ssb.style.display='none';
+        const si2=$i('syncIndicator');if(si2)si2.style.display='none';
+        onGameEnd(d.state||{move_count:totalMoves,completed:lastResult?.completed||0});
+        toast(lastResult?.outcome==='win'?'\ud83c\udf89 \u80dc\u5229\uff01':'\ud83d\udc80 \u6b7b\u5c40',lastResult?.outcome==='win'?'ok':'err');
+      }else if(d.type==='auto_paused'){
+        if(state==='stopped')return;
+        if(d.state){_pendingState=d.state;flushRender();}
+        const ssb2=$i('stratStatsBox');if(ssb2)ssb2.style.display='none';
+        const si3=$i('syncIndicator');if(si3)si3.style.display='none';
+      }else if(d.type==='new_game'&&d.state){
+        _prevCols=null;_pendingState=d.state;
+        _sseSeq=0;_sseLastSeq=0;_sseDropCount=0;
+          flushRender();
+      }
+      _sseOk=true;
+    }catch(ex){}
+  };
+  es.onerror=function(){
+    _sseOk=false;es.close();
+    _sseRetry++;setTimeout(connectSSE,Math.min(1000*Math.pow(2,_sseRetry),30000));
+  };
+}
+connectSSE();
+
+function flushRender(){
+  if(!_pendingState)return;
+  const s=_pendingState;_pendingState=null;
+
+  // 处理缓冲的步骤：每步都记录日志和快照
+  if(_stepBuffer.length>0){
+    _stepBuffer.forEach(step=>{
+      if(!step.state)step.state=s;
+      appendSnap(step);
+      logStep(step);
+    });
+    prevState=s;
+    _stepBuffer=[];
+  }
+
+  // 更新策略监控
+  if(_pendingStrategyStats){
+    const ss=_pendingStrategyStats;
+    if(ss.iterations!==undefined)$i('siIter').textContent=ss.iterations;
+    if(ss.tree_size!==undefined)$i('siSim').textContent=ss.tree_size;
+    if(ss.memory_hit_rate!==undefined)$i('siExplore').textContent=(ss.memory_hit_rate*100).toFixed(0)+'%';
+    _pendingStrategyStats=null;
+  }
+
+  updateUI(s);
+}
+
+// ═══ 主循环（50ms） ═══
+let _lastSys=0,_lastPoll=0,_pollInterval=200;
+
+async function mainLoop(){
+  const now=performance.now();
+  // 节流渲染（仪表盘模式降频，牌局模式高频）
+  if(now-_renderThrottle>RENDER_MS){_renderThrottle=now;flushRender();}
+  // 自动因子计算
+  if(_factorDirty&&now-_lastFactorCalc>FACTOR_MS&&state==='running'){
+    _factorDirty=false;_lastFactorCalc=now;
+    try{
+      const strat=$i('selStrat').value;const diff=+$i('selDiff').value;
+      const d=await api('calc-factors',{method:'POST',body:JSON.stringify({strategy:strat,difficulty:diff,num_games:3})});
+      if(d.ok&&d.factors){const sel=$i('selStrat');$i('profName').textContent=sel.options[sel.selectedIndex].text;
+        d.factors.forEach((f,i)=>{$i('f'+i).style.width=(f.score*100)+'%';$i('f'+i).style.background=f.score>0.7?'var(--green)':f.score>0.4?'var(--accent)':'var(--yellow)';$i('fv'+i).textContent=f.score.toFixed(3);});}
+    }catch(e){}
+  }
+  // SSE 断开兜底
+  if(state==='running'&&!_sseOk&&now-_lastPoll>_pollInterval){
+    _lastPoll=now;
+    try{const d=await api('status');if(d.state){if(d.result)lastResult=d.result;updateUI(d.state);if(!d.running){state='ended';updateButtons();onGameEnd(d.state);toast(lastResult?.outcome==='win'?'🎉 胜利！':'💀 死局',lastResult?.outcome==='win'?'ok':'err')}}}catch(e){}
+  }
+  // 系统监控
+  if(now-_lastSys>1000){_lastSys=now;
+    try{const s=await api('system');smoothCpu=smoothCpu===0?s.cpu_percent:smoothCpu*0.7+s.cpu_percent*0.3;smoothMem=smoothMem===0?s.mem_percent:smoothMem*0.7+s.mem_percent*0.3;
+      const cpu=Math.round(smoothCpu*10)/10,mem=Math.round(smoothMem*10)/10;
+      $i('perfCpu').textContent=cpu.toFixed(1)+'%';$i('perfCpuBar').style.width=cpu+'%';$i('perfCpuBar').style.background=cpu>80?'var(--red)':cpu>50?'var(--yellow)':'var(--accent)';
+      $i('perfMem').textContent=s.mem_used_gb+'GB / '+s.mem_total_gb+'GB';$i('perfMemBar').style.width=mem+'%';$i('perfMemBar').style.background=mem>85?'var(--red)':mem>60?'var(--yellow)':'var(--green)';
+      $i('perfCores').textContent=s.cpu_count+' 核心';
+      if(s.gpu_name){smoothGpu=smoothGpu===0?s.gpu_load:smoothGpu*0.7+s.gpu_load*0.3;const gpu=Math.round(smoothGpu*10)/10;$i('perfGpu').textContent=gpu.toFixed(1)+'%';$i('perfGpuBar').style.width=gpu+'%';$i('perfGpuName').textContent=s.gpu_name;$i('perfGpuTemp').textContent=s.gpu_temp?s.gpu_temp+'°C':''}
+      else{$i('perfGpu').textContent='未检测到';$i('perfGpuBar').style.width='0%';$i('perfGpuName').textContent='无独立GPU';$i('perfGpuTemp').textContent=''}
+    }catch(e){}
+  }
+}
+setInterval(mainLoop,16);
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+[project]
+name = "spiderette-strategy-lab"
+display_name = "Spiderette Strategy Lab"
+version = "5.0.5"
+description = "蜘蛛纸牌移牌策略研究平台 — 模拟驱动、插件扩展、实验可复现"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+readme = "README.md"
+dependencies = [
+    "flask>=3.0",
+    "numpy>=1.24.0",
+    "pywebview>=5.0",
+    "psutil>=5.9",
+    "GPUtil>=1.4",
+    "waitress>=3.0",
+]
+
+[project.optional-dependencies]
+ui = ["pywebview>=5.0"]
+plot = ["matplotlib>=3.7.0"]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "mypy>=1.5.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.0.0",
+]
+
+[project.entry-points."spiderette.envs"]
+simulator = "src.envs.simulator:create_env"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = ["-v", "--tb=short", "--strict-markers"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__",
+    "if TYPE_CHECKING:",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"

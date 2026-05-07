@@ -1,0 +1,497 @@
+{
+  "src/__init__.py": {
+    "classes": [],
+    "functions": [
+      "_read_version"
+    ]
+  },
+  "src/analysis/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/analysis/batch.py": {
+    "classes": [],
+    "functions": [
+      "run_single_game_dict",
+      "run_batch_parallel"
+    ]
+  },
+  "src/analysis/compare.py": {
+    "classes": [
+      "ComparisonStep",
+      "GameComparison",
+      "ComparisonReport",
+      "ParallelStrategyRunner"
+    ],
+    "functions": [
+      "_run_single_game"
+    ]
+  },
+  "src/analysis/exporter.py": {
+    "classes": [
+      "StepRecord",
+      "GameExportData",
+      "GameExporter"
+    ],
+    "functions": []
+  },
+  "src/analysis/factor.py": {
+    "classes": [
+      "FactorResult",
+      "FactorAnalysisReport",
+      "FactorAnalyzer"
+    ],
+    "functions": []
+  },
+  "src/analysis/genetic.py": {
+    "classes": [
+      "Gene",
+      "GAResult",
+      "GeneticOptimizer"
+    ],
+    "functions": []
+  },
+  "src/analysis/metrics.py": {
+    "classes": [
+      "GameMetrics",
+      "DistributionStats",
+      "StrategyStats"
+    ],
+    "functions": [
+      "extract_game_metrics",
+      "compute_distribution",
+      "collect_stats",
+      "compare_strategies"
+    ]
+  },
+  "src/analysis/pattern.py": {
+    "classes": [
+      "PatternResult",
+      "MiningReport",
+      "PatternMiner"
+    ],
+    "functions": []
+  },
+  "src/analysis/profile.py": {
+    "classes": [
+      "StrategyIdentity",
+      "DecisionFactor",
+      "SearchBehavior",
+      "DistributionMetric",
+      "PerformanceMetrics",
+      "StrategyQuantitativeProfile",
+      "StrategyComparisonMatrix",
+      "StrategyProfileExporter"
+    ],
+    "functions": []
+  },
+  "src/analysis/report.py": {
+    "classes": [
+      "ReportGenerator"
+    ],
+    "functions": []
+  },
+  "src/analysis/runner.py": {
+    "classes": [
+      "ExperimentConfig",
+      "ExperimentRunner",
+      "BenchmarkRunner"
+    ],
+    "functions": []
+  },
+  "src/analysis/scenario.py": {
+    "classes": [
+      "DecisionScenario",
+      "ScenarioResponse",
+      "ScenarioLibrary",
+      "ResponseCollector"
+    ],
+    "functions": []
+  },
+  "src/analysis/tournament.py": {
+    "classes": [
+      "MatchResult",
+      "TournamentResult",
+      "Tournament"
+    ],
+    "functions": []
+  },
+  "src/analysis/tuning.py": {
+    "classes": [
+      "ParamConfig",
+      "TrialResult",
+      "TuningReport",
+      "ParameterTuner"
+    ],
+    "functions": []
+  },
+  "src/analysis/utils.py": {
+    "classes": [],
+    "functions": [
+      "run_single_game",
+      "run_games_batch",
+      "_run_game_for_pool",
+      "run_games_parallel"
+    ]
+  },
+  "src/analysis/weakness.py": {
+    "classes": [
+      "Weakness",
+      "WeaknessReport"
+    ],
+    "functions": [
+      "detect_weaknesses",
+      "suggest_params"
+    ]
+  },
+  "src/core/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/core/exceptions.py": {
+    "classes": [
+      "SpideretteError",
+      "GameStateError",
+      "StrategyError",
+      "AnalysisError",
+      "ConfigError"
+    ],
+    "functions": []
+  },
+  "src/core/info_set.py": {
+    "classes": [
+      "VisibleCard",
+      "VisibleColumn",
+      "ObservedState"
+    ],
+    "functions": [
+      "extract_observed",
+      "observed_hash"
+    ]
+  },
+  "src/core/manifest.py": {
+    "classes": [
+      "StrategyManifest",
+      "ImprovementAction",
+      "IterationRecord"
+    ],
+    "functions": []
+  },
+  "src/core/rules.py": {
+    "classes": [
+      "RulesEngine"
+    ],
+    "functions": []
+  },
+  "src/core/session.py": {
+    "classes": [
+      "StepRecord",
+      "GameResult",
+      "GameSession"
+    ],
+    "functions": []
+  },
+  "src/core/types.py": {
+    "classes": [
+      "Suit",
+      "Rank",
+      "CardFace",
+      "Difficulty",
+      "Outcome",
+      "Card",
+      "Column",
+      "GameState",
+      "Move",
+      "Rules",
+      "Strategy",
+      "Environment"
+    ],
+    "functions": []
+  },
+  "src/envs/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/envs/generator.py": {
+    "classes": [],
+    "functions": [
+      "generate_game",
+      "generate_batch",
+      "_create_deck"
+    ]
+  },
+  "src/envs/plugins/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/envs/simulator.py": {
+    "classes": [
+      "SimulatorEnv"
+    ],
+    "functions": [
+      "create_env"
+    ]
+  },
+  "src/iteration/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/iteration/engine.py": {
+    "classes": [
+      "IterationEngine"
+    ],
+    "functions": []
+  },
+  "src/network/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/network/feature_v2.py": {
+    "classes": [],
+    "functions": [
+      "extract_features_v2",
+      "_same_suit_seq_len",
+      "_descending_seq_len",
+      "_color_alternations"
+    ]
+  },
+  "src/rl/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/rl/curriculum.py": {
+    "classes": [
+      "CurriculumStage",
+      "CurriculumScheduler"
+    ],
+    "functions": []
+  },
+  "src/rl/environment.py": {
+    "classes": [
+      "StepResult",
+      "SpideretteEnv"
+    ],
+    "functions": []
+  },
+  "src/rl/self_play.py": {
+    "classes": [
+      "SelfPlaySample",
+      "SelfPlayResult",
+      "SelfPlayCollector"
+    ],
+    "functions": []
+  },
+  "src/search/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/search/determinization.py": {
+    "classes": [],
+    "functions": [
+      "collect_known_cards",
+      "build_full_deck",
+      "compute_unknown_pool",
+      "count_face_down_per_column",
+      "sample_determinization",
+      "sample_multiple",
+      "estimate_face_down_distribution"
+    ]
+  },
+  "src/search/is_mcts.py": {
+    "classes": [
+      "ISMCTSStrategy"
+    ],
+    "functions": [
+      "create_is_mcts"
+    ]
+  },
+  "src/search/puct.py": {
+    "classes": [
+      "PolicyValueNetwork",
+      "HeuristicPolicyValue",
+      "PUCTNode",
+      "PUCTStrategy"
+    ],
+    "functions": [
+      "create_puct"
+    ]
+  },
+  "src/strategy/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/strategy/compose.py": {
+    "classes": [
+      "StrategyFn"
+    ],
+    "functions": [
+      "greedy",
+      "random_choice",
+      "GreedyStrategy",
+      "RandomStrategy",
+      "with_cache",
+      "with_adaptive_depth",
+      "with_parallel",
+      "_weighted_vote",
+      "with_time_limit",
+      "with_logging"
+    ]
+  },
+  "src/strategy/heuristics.py": {
+    "classes": [
+      "MovePriority"
+    ],
+    "functions": [
+      "evaluate",
+      "assess_complexity",
+      "move_priority",
+      "rank_moves",
+      "heuristic_rollout",
+      "_score_same_suit_sequences",
+      "_score_empty_col",
+      "_score_face_up",
+      "_would_complete_sequence"
+    ]
+  },
+  "src/strategy/mcts.py": {
+    "classes": [
+      "MCTSNode",
+      "MCTSMemory",
+      "MCTSStrategy"
+    ],
+    "functions": [
+      "create_mcts",
+      "create_mcts_deep",
+      "create_mcts_fast"
+    ]
+  },
+  "src/strategy/neural.py": {
+    "classes": [
+      "SimpleMLP",
+      "NeuralTrainer",
+      "NeuralStrategy"
+    ],
+    "functions": [
+      "extract_features"
+    ]
+  },
+  "src/strategy/registry.py": {
+    "classes": [
+      "StrategyFactory"
+    ],
+    "functions": [
+      "_register",
+      "_create_mcts",
+      "_create_mcts_fast",
+      "_create_mcts_deep",
+      "_create_greedy",
+      "_create_random",
+      "_create_neural",
+      "_create_is_mcts",
+      "_create_puct",
+      "get_strategy",
+      "get_factory",
+      "list_strategies",
+      "register_custom",
+      "register_from_config",
+      "register_from_manifest"
+    ]
+  },
+  "src/ui/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/ui/routes/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/ui/routes/analysis.py": {
+    "classes": [],
+    "functions": [
+      "register_analysis_routes"
+    ]
+  },
+  "src/ui/routes/export.py": {
+    "classes": [],
+    "functions": [
+      "register_export_routes"
+    ]
+  },
+  "src/ui/routes/game.py": {
+    "classes": [],
+    "functions": [
+      "register_game_routes"
+    ]
+  },
+  "src/ui/routes/iteration.py": {
+    "classes": [],
+    "functions": [
+      "register_iteration_routes"
+    ]
+  },
+  "src/ui/routes/system.py": {
+    "classes": [],
+    "functions": [
+      "register_system_routes"
+    ]
+  },
+  "src/ui/server.py": {
+    "classes": [
+      "SpideretteUI"
+    ],
+    "functions": []
+  },
+  "src/ui/window.py": {
+    "classes": [],
+    "functions": [
+      "run_window",
+      "_wait_for_server"
+    ]
+  },
+  "src/utils/__init__.py": {
+    "classes": [],
+    "functions": []
+  },
+  "src/utils/config.py": {
+    "classes": [
+      "Config",
+      "Section"
+    ],
+    "functions": [
+      "_load_config_file",
+      "_env_overrides",
+      "_coerce",
+      "get_config",
+      "reload_config",
+      "_deep_merge"
+    ]
+  },
+  "src/utils/logging.py": {
+    "classes": [
+      "_ModuleFilter"
+    ],
+    "functions": [
+      "get_logs_dir",
+      "set_module_level",
+      "setup_logging",
+      "get_logger",
+      "trace",
+      "log_exception",
+      "log_performance",
+      "log_strategy_decision"
+    ]
+  },
+  "src/utils/paths.py": {
+    "classes": [],
+    "functions": [
+      "is_frozen",
+      "get_app_root",
+      "get_data_dir",
+      "get_output_dir",
+      "get_experiments_dir",
+      "get_iterations_dir",
+      "get_models_dir",
+      "get_export_dir"
+    ]
+  }
+}

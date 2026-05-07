@@ -1,0 +1,91 @@
+# Spiderette Strategy Lab - Global Config
+# Priority: env SPIDERETTE_* > CLI args > this file > code defaults
+
+[server]
+host = "127.0.0.1"
+port = 5679
+
+[window]
+width = 1280
+height = 800
+min_width = 960
+min_height = 600
+threads = 16
+channel_timeout = 30
+recv_bytes = 65536
+send_bytes = 65536
+startup_timeout = 15
+
+[session]
+max_moves = 500
+step_delay = 0.0
+cycle_window = 20
+progress_window = 40
+
+[mcts]
+iterations = 1000
+time_limit = 1.0
+exploration = 1.4
+use_heuristic = true
+use_memory = true
+memory_size = 10000
+rollout_depth = 30
+convergence_threshold = 0.7
+convergence_min_visits = 50
+
+[mcts_deep]
+iterations = 2000
+time_limit = 2.0
+exploration = 1.2
+
+[mcts_fast]
+iterations = 300
+time_limit = 0.3
+
+[puct]
+iterations = 1000
+time_limit = 1.0
+c_puct = 1.5
+dirichlet_alpha = 0.3
+dirichlet_weight = 0.25
+temperature = 1.0
+rollout_fallback_depth = 15
+
+[is_mcts]
+n_determinizations = 10
+iterations = 500
+time_limit = 1.0
+exploration = 1.4
+use_heuristic = true
+
+[heuristics]
+completed = 50.0
+same_suit_seq = 9.0
+empty_col = 6.0
+face_up_ratio = 3.0
+max_depth = 30
+
+[neural]
+input_size = 58
+hidden1 = 128
+hidden2 = 64
+epochs = 50
+lr = 0.001
+batch_size = 64
+
+[analysis]
+difficulty = 1
+num_games = 30
+max_games = 100
+seeds_min = 1
+seeds_max = 50
+
+[genetic]
+pop_size = 10
+generations = 20
+max_moves = 300
+
+[compose]
+cache_capacity = 10000
+parallel_workers = 4
+timeout_seconds = 1.0

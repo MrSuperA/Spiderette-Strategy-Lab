@@ -1,0 +1,682 @@
+{
+  "synced_at": "2026-05-07T07:45:09.962916",
+  "version": "5.0.5",
+  "modules": [
+    {
+      "path": "src/__init__.py",
+      "docstring": "Spiderette Strategy Lab — 蜘蛛纸牌移牌策略研究平台",
+      "lines": 21,
+      "classes": 0,
+      "functions": 1
+    },
+    {
+      "path": "src/analysis/__init__.py",
+      "docstring": "",
+      "lines": 1,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/batch.py",
+      "docstring": "批量模拟 — 多进程并行执行",
+      "lines": 63,
+      "classes": 0,
+      "functions": 2
+    },
+    {
+      "path": "src/analysis/compare.py",
+      "docstring": "多策略并行对比 — 同 seed 多策略运行，实时对比决策差异",
+      "lines": 228,
+      "classes": 4,
+      "functions": 1
+    },
+    {
+      "path": "src/analysis/exporter.py",
+      "docstring": "牌局导出模块 — 完整牌局记录 + 量化策略分析",
+      "lines": 362,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/factor.py",
+      "docstring": "因子分析器 — 从响应矩阵中发现策略因子",
+      "lines": 267,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/genetic.py",
+      "docstring": "遗传算法优化器 — 自动进化最优策略参数",
+      "lines": 210,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/metrics.py",
+      "docstring": "量化分析引擎 — 胜率、分布、效率、置信区间、多策略对比",
+      "lines": 391,
+      "classes": 3,
+      "functions": 4
+    },
+    {
+      "path": "src/analysis/pattern.py",
+      "docstring": "模式挖掘 — 从历史数据中发现致胜模式和死局前兆",
+      "lines": 183,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/profile.py",
+      "docstring": "策略量化数据模板 — 描述策略本身的特征，而非牌局结果",
+      "lines": 457,
+      "classes": 8,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/report.py",
+      "docstring": "报告生成器 — CSV / JSON / Markdown / 文本摘要",
+      "lines": 178,
+      "classes": 1,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/runner.py",
+      "docstring": "实验运行器 — 配置驱动、结果可复现",
+      "lines": 373,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/scenario.py",
+      "docstring": "标准化场景库 + 决策采集器",
+      "lines": 414,
+      "classes": 4,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/tournament.py",
+      "docstring": "策略对抗 — 锦标赛模式：同 seed 多策略对比，生成胜率矩阵",
+      "lines": 135,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/tuning.py",
+      "docstring": "策略参数自动调优 — 网格搜索 + 贝叶斯优化",
+      "lines": 258,
+      "classes": 4,
+      "functions": 0
+    },
+    {
+      "path": "src/analysis/utils.py",
+      "docstring": "分析层公共工具函数 — 消除模块间重复代码",
+      "lines": 108,
+      "classes": 0,
+      "functions": 4
+    },
+    {
+      "path": "src/analysis/weakness.py",
+      "docstring": "策略弱点自动检测 — 基于量化因子识别策略短板",
+      "lines": 224,
+      "classes": 2,
+      "functions": 2
+    },
+    {
+      "path": "src/core/__init__.py",
+      "docstring": "",
+      "lines": 1,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/core/exceptions.py",
+      "docstring": "统一异常体系 — 所有自定义异常的根",
+      "lines": 25,
+      "classes": 5,
+      "functions": 0
+    },
+    {
+      "path": "src/core/info_set.py",
+      "docstring": "信息集抽象 — 将不完美信息博弈的状态分为可观测和隐藏两部分",
+      "lines": 111,
+      "classes": 3,
+      "functions": 2
+    },
+    {
+      "path": "src/core/manifest.py",
+      "docstring": "策略清单与迭代记录 — 纯数据层，无业务依赖",
+      "lines": 209,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/core/rules.py",
+      "docstring": "规则引擎 — 纯函数集合，无状态无副作用",
+      "lines": 212,
+      "classes": 1,
+      "functions": 0
+    },
+    {
+      "path": "src/core/session.py",
+      "docstring": "GameSession — 可迭代的游戏循环",
+      "lines": 235,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/core/types.py",
+      "docstring": "核心类型定义 — 数据模型 + 协议接口",
+      "lines": 322,
+      "classes": 12,
+      "functions": 0
+    },
+    {
+      "path": "src/envs/__init__.py",
+      "docstring": "",
+      "lines": 1,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/envs/generator.py",
+      "docstring": "随机牌局生成器",
+      "lines": 104,
+      "classes": 0,
+      "functions": 3
+    },
+    {
+      "path": "src/envs/plugins/__init__.py",
+      "docstring": "",
+      "lines": 1,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/envs/simulator.py",
+      "docstring": "模拟器环境 — 内置纯模拟，满足 Environment 协议",
+      "lines": 74,
+      "classes": 1,
+      "functions": 1
+    },
+    {
+      "path": "src/iteration/__init__.py",
+      "docstring": "策略迭代模块 — 评估→分析→改进→对比的完整闭环",
+      "lines": 17,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/iteration/engine.py",
+      "docstring": "策略迭代引擎 — 连接评估→分析→改进→对比的完整闭环",
+      "lines": 349,
+      "classes": 1,
+      "functions": 0
+    },
+    {
+      "path": "src/network/__init__.py",
+      "docstring": "网络模块 — 增强特征提取、GNN、Transformer",
+      "lines": 4,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/network/feature_v2.py",
+      "docstring": "增强特征提取 v2 — 200+ 维，捕捉列间关系、红黑交替、历史信息",
+      "lines": 357,
+      "classes": 0,
+      "functions": 4
+    },
+    {
+      "path": "src/rl/__init__.py",
+      "docstring": "强化学习模块 — Gym 风格环境、奖励函数、PPO 训练器、课程学习",
+      "lines": 18,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/rl/curriculum.py",
+      "docstring": "课程学习调度器 — 根据策略表现自适应调整训练难度",
+      "lines": 157,
+      "classes": 2,
+      "functions": 0
+    },
+    {
+      "path": "src/rl/environment.py",
+      "docstring": "Gym 风格的 RL 环境包装器 — 将 GameSession 包装为标准 RL 接口",
+      "lines": 202,
+      "classes": 2,
+      "functions": 0
+    },
+    {
+      "path": "src/rl/self_play.py",
+      "docstring": "自博弈数据收集器 — 用 MCTS 搜索生成训练数据",
+      "lines": 193,
+      "classes": 3,
+      "functions": 0
+    },
+    {
+      "path": "src/search/__init__.py",
+      "docstring": "搜索模块 — 前沿搜索算法实现",
+      "lines": 5,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/search/determinization.py",
+      "docstring": "暗牌确定化采样器 — 将不完美信息状态转换为多个确定化状态",
+      "lines": 218,
+      "classes": 0,
+      "functions": 7
+    },
+    {
+      "path": "src/search/is_mcts.py",
+      "docstring": "信息集 MCTS (IS-MCTS) — 处理不完美信息的蒙特卡洛树搜索",
+      "lines": 166,
+      "classes": 1,
+      "functions": 1
+    },
+    {
+      "path": "src/search/puct.py",
+      "docstring": "PUCT 搜索 — AlphaZero 风格的 MCTS，集成神经网络先验",
+      "lines": 340,
+      "classes": 4,
+      "functions": 1
+    },
+    {
+      "path": "src/strategy/__init__.py",
+      "docstring": "",
+      "lines": 1,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/strategy/compose.py",
+      "docstring": "策略组合器 — 装饰器模式，替代继承树",
+      "lines": 192,
+      "classes": 1,
+      "functions": 10
+    },
+    {
+      "path": "src/strategy/heuristics.py",
+      "docstring": "启发式评估函数集 — MCTS 的模拟与评估引导",
+      "lines": 258,
+      "classes": 1,
+      "functions": 9
+    },
+    {
+      "path": "src/strategy/mcts.py",
+      "docstring": "MCTS 策略 — 蒙特卡洛树搜索核心算法",
+      "lines": 424,
+      "classes": 3,
+      "functions": 3
+    },
+    {
+      "path": "src/strategy/neural.py",
+      "docstring": "神经网络评估策略 — 使用 MLP 评估棋盘状态",
+      "lines": 311,
+      "classes": 3,
+      "functions": 1
+    },
+    {
+      "path": "src/strategy/registry.py",
+      "docstring": "策略注册中心 — 单一注册点，消除 4 处重复",
+      "lines": 168,
+      "classes": 1,
+      "functions": 15
+    },
+    {
+      "path": "src/ui/__init__.py",
+      "docstring": "",
+      "lines": 1,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/ui/routes/__init__.py",
+      "docstring": "路由模块 — Flask Blueprint 拆分",
+      "lines": 10,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/ui/routes/analysis.py",
+      "docstring": "analysis routes - extracted from server.py",
+      "lines": 315,
+      "classes": 0,
+      "functions": 1
+    },
+    {
+      "path": "src/ui/routes/export.py",
+      "docstring": "export routes - extracted from server.py",
+      "lines": 118,
+      "classes": 0,
+      "functions": 1
+    },
+    {
+      "path": "src/ui/routes/game.py",
+      "docstring": "game routes - extracted from server.py",
+      "lines": 143,
+      "classes": 0,
+      "functions": 1
+    },
+    {
+      "path": "src/ui/routes/iteration.py",
+      "docstring": "iteration routes - extracted from server.py",
+      "lines": 114,
+      "classes": 0,
+      "functions": 1
+    },
+    {
+      "path": "src/ui/routes/system.py",
+      "docstring": "system routes - extracted from server.py",
+      "lines": 165,
+      "classes": 0,
+      "functions": 1
+    },
+    {
+      "path": "src/ui/server.py",
+      "docstring": "Flask Web 服务 — 研究模式 + 实时可视化",
+      "lines": 226,
+      "classes": 1,
+      "functions": 0
+    },
+    {
+      "path": "src/ui/window.py",
+      "docstring": "Native window wrapper - pywebview + WebView2 + Waitress production server",
+      "lines": 119,
+      "classes": 0,
+      "functions": 2
+    },
+    {
+      "path": "src/utils/__init__.py",
+      "docstring": "工具模块 — 路径解析、通用工具",
+      "lines": 2,
+      "classes": 0,
+      "functions": 0
+    },
+    {
+      "path": "src/utils/config.py",
+      "docstring": "Configuration management for Spiderette Strategy Lab.",
+      "lines": 179,
+      "classes": 2,
+      "functions": 6
+    },
+    {
+      "path": "src/utils/logging.py",
+      "docstring": "统一日志系统 - 分类输出 + 统一管理",
+      "lines": 295,
+      "classes": 1,
+      "functions": 8
+    },
+    {
+      "path": "src/utils/paths.py",
+      "docstring": "路径解析工具 — 统一处理开发环境和 PyInstaller 打包环境的路径",
+      "lines": 94,
+      "classes": 0,
+      "functions": 8
+    }
+  ],
+  "strategies": [
+    {
+      "name": "mcts",
+      "display_name": "MCTS",
+      "description": "蒙特卡洛树搜索，200次迭代"
+    },
+    {
+      "name": "mcts_fast",
+      "display_name": "MCTS 快速",
+      "description": "低迭代次数，适合批量"
+    },
+    {
+      "name": "mcts_deep",
+      "display_name": "MCTS 深度",
+      "description": "高迭代次数，高质量"
+    },
+    {
+      "name": "greedy",
+      "display_name": "贪心",
+      "description": "启发式评分选择最优移动"
+    },
+    {
+      "name": "random",
+      "display_name": "随机",
+      "description": "随机选择合法移动（基线）"
+    },
+    {
+      "name": "neural",
+      "display_name": "神经网络",
+      "description": "MLP 评估策略（需先训练模型）"
+    },
+    {
+      "name": "is_mcts",
+      "display_name": "信息集MCTS",
+      "description": "处理暗牌不完美信息的MCTS"
+    },
+    {
+      "name": "puct",
+      "display_name": "PUCT搜索",
+      "description": "AlphaZero风格PUCT搜索，支持神经网络先验"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/compare",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/weakness",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/calc-factors",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/genetic-optimize",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/mine-patterns",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/tournament",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/neural-train",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/run",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/run-experiment",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/weakness-suggest",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/export",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/export/history",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/export/profile",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/new-game",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/step",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/auto-play",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/stop",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/replay",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/switch-strategy",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/iterate",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/iterations",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/manifest/export",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/manifest/load",
+      "methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/api/manifests",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/version",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/project-meta",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/static/<path:filename>",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/stream",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/status",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/strategies",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/task/<task_id>",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/search-tree",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/system",
+      "methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/api/import-strategy",
+      "methods": [
+        "POST"
+      ]
+    }
+  ],
+  "test_count": 321,
+  "stats": {
+    "total_modules": 59,
+    "total_strategies": 8,
+    "total_endpoints": 35,
+    "total_lines": 10329,
+    "total_classes": 98,
+    "total_functions": 100
+  }
+}

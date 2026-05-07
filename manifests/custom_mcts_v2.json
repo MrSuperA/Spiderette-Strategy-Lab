@@ -1,0 +1,14 @@
+{
+  "name": "mcts_custom_v2",
+  "display_name": "MCTS 自定义V2",
+  "base_strategy": "mcts",
+  "params": {
+    "iterations": 500,
+    "exploration": 1.5,
+    "max_depth": 30
+  },
+  "version": "2.0.0",
+  "source": "manual",
+  "notes": "自定义MCTS变体：500次迭代，探索系数1.5，最大深度30",
+  "metrics": {}
+}
