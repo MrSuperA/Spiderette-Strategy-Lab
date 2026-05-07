@@ -1,5 +1,5 @@
 {
-  "synced_at": "2026-05-07T07:45:09.962916",
+  "synced_at": "2026-05-07T09:44:28.166861",
   "version": "5.0.5",
   "modules": [
     {
@@ -376,14 +376,14 @@
     {
       "path": "src/ui/server.py",
       "docstring": "Flask Web 服务 — 研究模式 + 实时可视化",
-      "lines": 226,
+      "lines": 238,
       "classes": 1,
       "functions": 0
     },
     {
       "path": "src/ui/window.py",
       "docstring": "Native window wrapper - pywebview + WebView2 + Waitress production server",
-      "lines": 119,
+      "lines": 146,
       "classes": 0,
       "functions": 2
     },
@@ -675,7 +675,7 @@
     "total_modules": 59,
     "total_strategies": 8,
     "total_endpoints": 35,
-    "total_lines": 10329,
+    "total_lines": 10368,
     "total_classes": 98,
     "total_functions": 100
   }

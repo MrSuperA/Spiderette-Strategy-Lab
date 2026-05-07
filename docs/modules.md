@@ -53,8 +53,8 @@
 | `src/ui/routes/game.py` | game routes - extracted from server.py | 143 | 0 | 1 |
 | `src/ui/routes/iteration.py` | iteration routes - extracted from server.py | 114 | 0 | 1 |
 | `src/ui/routes/system.py` | system routes - extracted from server.py | 165 | 0 | 1 |
-| `src/ui/server.py` | Flask Web 服务 — 研究模式 + 实时可视化 | 226 | 1 | 0 |
-| `src/ui/window.py` | Native window wrapper - pywebview + WebView2 + Waitress production server | 119 | 0 | 2 |
+| `src/ui/server.py` | Flask Web 服务 — 研究模式 + 实时可视化 | 238 | 1 | 0 |
+| `src/ui/window.py` | Native window wrapper - pywebview + WebView2 + Waitress production server | 146 | 0 | 2 |
 | `src/utils/__init__.py` | 工具模块 — 路径解析、通用工具 | 2 | 0 | 0 |
 | `src/utils/config.py` | Configuration management for Spiderette Strategy Lab. | 179 | 2 | 6 |
 | `src/utils/logging.py` | 统一日志系统 - 分类输出 + 统一管理 | 295 | 1 | 8 |

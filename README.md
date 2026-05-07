@@ -229,6 +229,20 @@ register_strategy("my_strategy", "我的策略", MyStrategy, "自定义策略示
 Spiderette Strategy Lab/
 ├── .github/                              # GitHub Actions 工作流配置
 │   └── workflows/                        # CI/CD 流水线
+├── build/
+│   └── spiderette/
+│       ├── localpycs/
+│       ├── Analysis-00.toc
+│       ├── COLLECT-00.toc
+│       ├── EXE-00.toc
+│       ├── PKG-00.toc
+│       ├── PYZ-00.pyz
+│       ├── PYZ-00.toc
+│       ├── SpideretteStrategyLab.exe
+│       ├── SpideretteStrategyLab.pkg
+│       ├── base_library.zip
+│       ├── warn-spiderette.txt
+│       └── xref-spiderette.html
 ├── dist/                                 # 构建输出目录
 │   ├── spiderette_data/                  # 运行时数据目录
 │   │   └── logs/                         # 运行日志目录
@@ -244,10 +258,21 @@ Spiderette Strategy Lab/
 │   ├── project_structure.md              # 项目结构文档
 │   └── strategies.md                     # 策略说明文档
 ├── experiments/                          # 实验配置与结果
-│   └── configs/                          # 实验配置文件（TOML）
+│   ├── configs/                          # 实验配置文件（TOML）
+│   └── results/                          # 实验输出结果
+│       ├── benchmark_report.json
+│       ├── benchmark_results.csv
+│       ├── benchmark_summary.txt
+│       ├── neural_model.npz
+│       ├── report.md
+│       └── strategy_profile_20260504_010555.txt
 ├── iterations/                           # 迭代记录
 │   └── .gitkeep                          # 占位文件
 ├── logs/                                 # 运行日志
+│   ├── app.log
+│   ├── error.log
+│   ├── strategy.log
+│   └── training.log
 ├── manifests/                            # 策略清单目录
 │   └── custom_mcts_v2.json               # 自定义 MCTS 策略清单
 ├── models/                               # 训练好的模型文件
@@ -307,13 +332,15 @@ Spiderette Strategy Lab/
 │   │   │   ├── iteration.py              # 迭代页面路由
 │   │   │   └── system.py                 # 系统页面路由
 │   │   ├── static/                       # 静态资源目录
+│   │   │   ├── _new_css.txt
 │   │   │   └── index.html                # 前端主页
 │   │   ├── server.py                     # Web 服务器
 │   │   └── window.py                     # GUI 窗口管理
-│   └── utils/                            # 通用工具函数
-│       ├── config.py                     # 配置文件读取
-│       ├── logging.py                    # 日志配置
-│       └── paths.py                      # 路径工具函数
+│   ├── utils/                            # 通用工具函数
+│   │   ├── config.py                     # 配置文件读取
+│   │   ├── logging.py                    # 日志配置
+│   │   └── paths.py                      # 路径工具函数
+│   └── 1
 ├── tests/                                # 单元测试
 │   ├── _gen.py                           # 测试数据生成器
 │   ├── _gen_test.py                      # 生成器测试
@@ -339,7 +366,9 @@ Spiderette Strategy Lab/
 ├── tools/                                # 开发工具（文档同步、模板生成等）
 │   ├── .file_hashes.json                 # 文件哈希缓存（增量同步用）
 │   ├── .symbol_snapshots.json            # 符号快照缓存（变更检测用）
+│   ├── apply_css.py
 │   ├── gen_template.py                   # 模板生成工具
+│   ├── new_theme.css
 │   ├── post_improve.py                   # 代码改进后处理
 │   ├── readme_template.md                # README 模板文件
 │   └── sync_docs.py                      # 文档自动同步脚本
@@ -348,6 +377,8 @@ Spiderette Strategy Lab/
 ├── LICENSE                               # MIT 许可证
 ├── Makefile                              # 构建自动化脚本
 ├── README.md                             # 项目说明（本文件）
+├── _css_b64.txt
+├── _win_err.txt
 ├── build.bat                             # Windows 打包脚本
 ├── config.toml                           # 运行时配置文件
 ├── main.py                               # 程序入口
