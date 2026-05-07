@@ -2,7 +2,7 @@
 
 > **v5.0.5** — 蜘蛛纸牌移牌策略研究平台
 >
-> 0 模块 · 0 策略 · 0 API · 321 测试 · 0 行代码
+> 59 模块 · 8 策略 · 35 API · 0 测试 · 10,368 行代码
 
 Spiderette Strategy Lab 是一个专注于**蜘蛛纸牌（Spiderette）移牌策略研究**的量化分析平台。通过系统化的模拟实验和多维度数据分析，探索并对比不同策略在多难度下的表现。
 
@@ -427,7 +427,7 @@ Spiderette Strategy Lab/
 | GET | `/api/analysis` | 策略分析 |
 | GET | `/api/stream` | SSE 事件流 |
 
-> 共 0 个端点，完整列表见 [docs/api.md](docs/api.md)
+> 共 35 个端点，完整列表见 [docs/api.md](docs/api.md)
 
 ---
 
