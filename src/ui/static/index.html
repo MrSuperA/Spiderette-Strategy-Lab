@@ -700,11 +700,11 @@ function updateButtons(){
   bn.disabled=false;bs.disabled=false;bp.disabled=false;bx.disabled=false;bt.disabled=false;
   switch(state){
     case 'idle':    bs.disabled=true;bp.disabled=true;bx.disabled=true;bt.disabled=true;bs.textContent='启动';break;
-    case 'ready':   bn.disabled=true;bp.disabled=true;bx.disabled=true;bs.textContent='启动';break;
+    case 'ready':   bp.disabled=true;bx.disabled=true;bs.textContent='启动';break;
     case 'running': bn.disabled=true;bs.disabled=true;bt.disabled=true;bs.textContent='启动';break;
-    case 'paused':  bn.disabled=true;bp.disabled=true;bs.textContent='恢复';break;
+    case 'paused':  bp.disabled=true;bs.textContent='恢复';break;
     case 'stopped': bp.disabled=true;bx.disabled=true;bs.textContent='启动';break;
-    case 'ended':   bs.disabled=true;bp.disabled=true;bx.disabled=true;bt.disabled=true;bs.textContent='启动';break;
+    case 'ended':   bn.disabled=true;bs.disabled=true;bp.disabled=true;bx.disabled=true;bt.disabled=true;bs.textContent='启动';break;
   }
   // 暂停按钮：running 时黄色可用，其他状态灰色禁用
   if(state==='running'){bp.className='btn btn-warn';bp.style.opacity='1'}
@@ -715,7 +715,7 @@ function updateButtons(){
 
 // ── Actions ──
 async function newGame(){
-  if(state==='running'||state==='paused')return;
+  if(state==='running')return;
   const d=await api('new-game',{method:'POST',body:JSON.stringify({seed:Math.floor(Math.random()*1e5),difficulty:+$i('selDiff').value,strategy:$i('selStrat').value})});
   if(d.ok){
     hasGame=true;lastResult=null;stepTimes=[];legalCounts=[];dealCount=0;totalMoves=0;snapHistory=[];snapIdx=-1;snapAuto=true;prevState=null;_prevCols=null;_pendingState=null;_stepBuffer=[];_factorDirty=true;_lastFactorCalc=0;
