@@ -115,13 +115,16 @@ select.tb:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,172,254,
 .y{color:var(--yellow)}
 
 /* ===== CARDS ===== */
-.card{width:var(--card-w);height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;border:1px solid var(--border2);background:var(--bg3);transition:all .2s ease;cursor:default;flex-shrink:0}
-.card-fd{background:linear-gradient(135deg,#1a2744,#1e3a5f 40%,#1a2744 60%,#1e3a5f);border:1px solid rgba(79,172,254,.2);opacity:1;position:relative;overflow:hidden}.card-fd::after{content:"";position:absolute;inset:2px;border:1px dashed rgba(79,172,254,.15);border-radius:2px}
+.card{width:var(--card-w);height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid var(--border2);background:var(--bg3);transition:all .2s ease;cursor:default;flex-shrink:0;letter-spacing:.02em}
+.card-fd{background:linear-gradient(135deg,#1a2744,#1e3a5f 40%,#1a2744 60%,#1e3a5f);border:1px solid rgba(79,172,254,.25);opacity:1;position:relative;overflow:hidden}.card-fd::after{content:"";position:absolute;inset:2px;border:1px dashed rgba(79,172,254,.2);border-radius:2px}
 .card-fu{cursor:pointer;transition:all .2s ease}
-.card-fu:hover{border-color:var(--accent);box-shadow:0 0 8px rgba(79,172,254,.15);transform:translateY(-1px)}
-.card-fu.red{color:var(--red)}
-.card-fu.black{color:var(--text)}
-.card-top{border-color:var(--accent);box-shadow:0 0 6px rgba(79,172,254,.12)}
+.card-fu:hover{border-color:var(--accent);box-shadow:0 0 10px rgba(79,172,254,.25);transform:translateY(-1px)}
+.card-fu.red{color:#ff6b6b;text-shadow:0 0 4px rgba(255,107,107,.3)}
+.card-fu.black{color:#f0f4f8;text-shadow:0 0 3px rgba(255,255,255,.15)}
+.card-top{border-color:var(--accent);box-shadow:0 0 8px rgba(79,172,254,.2)}
+.suit{font-size:10px;opacity:.9;margin-left:1px}
+.red .suit{color:#ff8a8a}
+.black .suit{color:#c8d6e5}
 
 /* ===== SNAPSHOT NAV ===== */
 .snap-hd{display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border)}
@@ -854,7 +857,7 @@ function renderBoard(s){
       for(let j=0;j<fd;j++)h+='<div class="card card-fd"></div>';
       for(let j=0;j<fu.length;j++){
         const k=fu[j];
-        h+=`<div class="card card-fu ${k.red?'red':'black'} ${j===fu.length-1?'card-top':''}">${k.rank}${k.suit}</div>`;
+        h+=`<div class="card card-fu ${k.red?'red':'black'} ${j===fu.length-1?'card-top':''}">${k.rank}<span class="suit">${k.suit}</span></div>`;
       }
     }
     body.innerHTML=h;
